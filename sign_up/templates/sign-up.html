@@ -67,18 +67,18 @@
         {% csrf_token %}
         <input
           type="text"
-          name="firstName"
-          id="firstName"
+          name="first_name"
+          id="first_name"
           placeholder="First"
-          value="{{request.session.signUpData.firstName}}"
+          value="{{request.session.signUpData.first_name}}"
           required
         />
         <input
           type="text"
-          name="lastName"
-          id="lastName"
+          name="last_name"
+          id="last_name"
           placeholder="Last"
-          value="{{request.session.signUpData.lastName}}"
+          value="{{request.session.signUpData.last_name}}"
           required
         />
         <input
@@ -91,32 +91,32 @@
         />
         <input
           type="password"
-          name="password1"
-          id="password1"
+          name="password_1"
+          id="password_1"
           placeholder="Password"
           required
         />
         <input
           type="password"
-          name="password2"
-          id="password2"
+          name="password_2"
+          id="password_2"
           placeholder="Confirm Password"
           required
         />
         <input
           type="text"
-          name="addressStreet1"
-          id="addressStreet1"
+          name="street_1"
+          id="street_1"
           placeholder="Address Line 1"
-          value="{{request.session.signUpData.addressStreet1}}"
+          value="{{request.session.signUpData.street_1}}"
           required
         />
         <input
           type="text"
-          name="addressStreet2"
-          id="addressStreet2"
+          name="street_2"
+          id="street_2"
           placeholder="Address Line 2"
-          value="{{request.session.signUpData.addressStreet2}}"
+          value="{{request.session.signUpData.street_2}}"
         />
         <input
           type="text"
@@ -182,12 +182,12 @@
         </select>
         <input
           type="text"
-          name="zipCode"
-          id="zipCode"
+          name="zip_code"
+          id="zip_code"
           placeholder="Zip Code"
           pattern="[0-9]{5}"
           title="Five digit zip code"
-          value="{{request.session.signUpData.zipCode}}"
+          value="{{request.session.signUpData.zip_code}}"
           required
         />
         <input type="submit" value="Register" id="submit-btn" />
@@ -198,15 +198,15 @@
         {% csrf_token %}
         <input
           type="text"
-          name="firstName"
-          id="firstName"
+          name="first_name"
+          id="first_name"
           placeholder="First"
           required
         />
         <input
           type="text"
-          name="lastName"
-          id="lastName"
+          name="last_name"
+          id="last_name"
           placeholder="Last"
           required
         />
@@ -219,29 +219,29 @@
         />
         <input
           type="password"
-          name="password1"
-          id="password1"
+          name="password_1"
+          id="password_1"
           placeholder="Password"
           required
         />
         <input
           type="password"
-          name="password2"
-          id="password2"
+          name="password_2"
+          id="password_2"
           placeholder="Confirm Password"
           required
         />
         <input
           type="text"
-          name="addressStreet1"
-          id="addressStreet1"
+          name="street_1"
+          id="street_1"
           placeholder="Address Line 1"
           required
         />
         <input
           type="text"
-          name="addressStreet2"
-          id="addressStreet2"
+          name="street_2"
+          id="street_2"
           placeholder="Address Line 2"
         />
         <input type="text" name="city" id="city" placeholder="City" required />
@@ -301,8 +301,8 @@
         </select>
         <input
           type="text"
-          name="zipCode"
-          id="zipCode"
+          name="zip_code"
+          id="zip_code"
           placeholder="Zip Code"
           pattern="[0-9]{5}"
           title="Five digit zip code"

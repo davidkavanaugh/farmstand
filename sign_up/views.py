@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest
 from . import exceptions
+from sign_up.models import User, Address
 import json
 import environ
 import requests
@@ -9,6 +10,9 @@ env = environ.Env()
 
 
 def index(request):
+    if "error" not in request.session:
+        if "signUpData" in request.session:
+            del request.session["signUpData"]
     return render(request, "sign-up.html")
 
 
@@ -16,7 +20,7 @@ def register(request):
     # CHECK IF PASSWORDS MATCH
     try:
         request.session['signUpData'] = request.POST
-        if request.POST.get('password1') != request.POST.get('password2'):
+        if request.POST.get('password_1') != request.POST.get('password_2'):
             raise exceptions.PasswordMatch(
                 'password_match', 'Passwords must match')
         else:
@@ -33,7 +37,7 @@ def register(request):
         request.session["error"] = "User already exists"
         return redirect("/sign-up")
     except Exception as e:
-        print(e)
+        print("ERROR", e)
         request.session["error"] = "Internal server error"
         return redirect("/sign-up")
 
@@ -42,7 +46,7 @@ def auth0SignUp(request):
     user_obj = {
         'client_id': env("AUTH0_CLIENT_ID"),
         'email': request.POST['email'],
-        'password': request.POST.get['password1'],
+        'password': request.POST['password_1'],
         'connection': env("AUTH0_CONNECTION")
     }
     auth0_user = requests.post(
@@ -57,10 +61,35 @@ def auth0SignUp(request):
                 res["code"], "User already exists")
         else:
             raise Exception
-    else:  # make user, delete session when done
-        return createUserDocument(request)
+    else:
+        return create_user(request, res["_id"])
 
 
-def createUserDocument(request):
-    del request.session["signUpData"]
-    pass
+def create_user(request, auth0_id):
+    try:
+        user_address = Address(
+            street_1=request.POST["street_1"],
+            street_2=request.POST["street_2"],
+            city=request.POST["city"],
+            state=request.POST["state"],
+            zip_code=request.POST["zip_code"]
+        )
+        user_address.save()
+
+        new_user = User(
+            auth0_id=auth0_id,
+            first_name=request.POST["first_name"],
+            last_name=request.POST["last_name"],
+            email=request.POST["email"],
+            address=user_address
+        )
+        new_user.save()
+        print("REGISTRATION SUCCESSFUL")
+        print("DELETING SESSION", request.session["signUpData"])
+        return redirect('/sign-up/success')
+    except:
+        raise Exception
+
+
+def success(request):
+    return render(request, "success.html")
