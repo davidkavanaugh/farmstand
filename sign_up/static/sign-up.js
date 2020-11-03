@@ -1,6 +1,6 @@
-$(document).ready(() => {
+$(document).ready(function () {
   const removeErrors = () => {
     $("#sign-up-errors").html("");
   };
-  $("#password, #confirmPassword, #email").keyup(removeErrors);
+  $("form").keyup(removeErrors);
 });

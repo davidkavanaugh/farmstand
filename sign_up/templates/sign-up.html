@@ -63,7 +63,7 @@
       <h2>Register</h2>
       {% if request.session.signUpData %}
       <div id="sign-up-errors">{{request.session.error}}</div>
-      <form action="register" method="POST">
+      <form action="register" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <input
           type="text"
@@ -91,15 +91,15 @@
         />
         <input
           type="password"
-          name="password"
-          id="password"
+          name="password1"
+          id="password1"
           placeholder="Password"
           required
         />
         <input
           type="password"
-          name="confirmPassword"
-          id="confirmPassword"
+          name="password2"
+          id="password2"
           placeholder="Confirm Password"
           required
         />
@@ -194,7 +194,7 @@
       </form>
       {% else %}
       <div id="sign-up-errors"></div>
-      <form action="register" method="POST">
+      <form action="register" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <input
           type="text"
@@ -219,15 +219,15 @@
         />
         <input
           type="password"
-          name="password"
-          id="password"
+          name="password1"
+          id="password1"
           placeholder="Password"
           required
         />
         <input
           type="password"
-          name="confirmPassword"
-          id="confirmPassword"
+          name="password2"
+          id="password2"
           placeholder="Confirm Password"
           required
         />
