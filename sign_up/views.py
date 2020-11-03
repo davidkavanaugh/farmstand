@@ -85,7 +85,7 @@ def create_user(request, auth0_id):
         )
         new_user.save()
         print("REGISTRATION SUCCESSFUL")
-        print("DELETING SESSION", request.session["signUpData"])
+        del request.session["signUpData"]
         return redirect('/sign-up/success')
     except:
         raise Exception
