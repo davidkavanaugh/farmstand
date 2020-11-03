@@ -1,3 +1,6 @@
 $(document).ready(() => {
-  console.log("sign up");
+  const removeErrors = () => {
+    $("#sign-up-errors").html("");
+  };
+  $("#password, #confirmPassword, #email").keyup(removeErrors);
 });
