@@ -6,6 +6,7 @@ import json
 import environ
 import requests
 import bcrypt
+import uuid
 
 env = environ.Env()
 
@@ -81,6 +82,7 @@ def create_user(request, auth0_id):
             request.POST['password_1'].encode(), bcrypt.gensalt()).decode()
 
         new_user = User(
+            id=uuid.uuid1(),
             auth0_id=auth0_id,
             first_name=request.POST["first_name"],
             last_name=request.POST["last_name"],
