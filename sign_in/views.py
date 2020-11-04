@@ -9,7 +9,6 @@ def index(request):
 
 
 def get_user(request):
-    pass
     # env = environ.Env()
     # auth_payload = {
     #     'grant_type': 'password',
@@ -24,16 +23,18 @@ def get_user(request):
     # print(res)
     # # return HttpResponse(res)
 
-    # try:
-    #     # get user by email from db
-    #     user = User.objects.get(email=request.POST["email"])
-    #     # check if password input matches
-    #     password = request.POST["password"].encode('utf8')
-    #     hashed = user.password
-    #     # Check that an unhashed password matches one that has previously been
-    #     if bcrypt.checkpw(password, hashed):
-    #         print("It Matches!")
-    #     else:
-    #         print("It Does not Match :(")
-    # except Exception:
-    #     raise Exception
+    try:
+        # get user by email from db
+        user = User.objects.filter(email=request.POST["email"])
+        if user:
+            logged_user = user[0]
+            # check if password input matches
+            if bcrypt.checkpw(request.POST['password'].encode(), logged_user.password.encode()):
+                print("password matches")
+                request.session['user_id'] = logged_user.id
+                return redirect('/me')
+        print("does not match")
+        return redirect('/sign-in')
+
+    except Exception:
+        raise Exception
