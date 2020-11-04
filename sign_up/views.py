@@ -5,6 +5,7 @@ from sign_up.models import User, Address
 import json
 import environ
 import requests
+import bcrypt
 
 env = environ.Env()
 
@@ -81,7 +82,9 @@ def create_user(request, auth0_id):
             first_name=request.POST["first_name"],
             last_name=request.POST["last_name"],
             email=request.POST["email"],
-            address=user_address
+            address=user_address,
+            password=bcrypt.hashpw(
+                request.POST["password_1"].encode("utf-8"), bcrypt.gensalt())
         )
         new_user.save()
         print("REGISTRATION SUCCESSFUL")
