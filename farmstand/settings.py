@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'sign_up',
     'store',
     'search',
+    'logout',
     'add_product',
     'django.contrib.admin',
     'django.contrib.auth',

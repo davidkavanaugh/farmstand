@@ -1,7 +1,8 @@
 from . import views
 from django.urls import path
 
+app_name = "logout"
+
 urlpatterns = [
-    path("", views.redir),
-    path("<uuid:user_id>", views.index)
+    path("", views.index, name="index")
 ]

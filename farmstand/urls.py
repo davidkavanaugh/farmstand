@@ -26,6 +26,7 @@ urlpatterns = [
     path('results/', include('results.urls')),
     path('sign-in/', include('sign_in.urls')),
     path('sign-up/', include('sign_up.urls')),
-    path('store/', include('store.urls'))
+    path('store/', include('store.urls')),
+    path('logout/', include('logout.urls'))
     # path('admin/', admin.site.urls),
 ]

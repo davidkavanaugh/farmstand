@@ -6,6 +6,8 @@ import bcrypt
 
 
 def index(request):
+    if "user_id" in request.session:
+        return redirect('/me/' + request.session['user_id'])
     return render(request, "sign-in.html")
 
 
