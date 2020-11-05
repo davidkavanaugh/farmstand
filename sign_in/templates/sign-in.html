@@ -61,6 +61,9 @@
     <!--SIGN IN-->
     <div id="sign-in-wrapper">
       <h2>Sign In</h2>
+      <div id="sign-in-alert">
+        {%if messages%}{%for message in messages%}{{message}}{%endfor%}{%endif%}
+      </div>
       <form action="get-user" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <input type="email" name="email" id="email" />

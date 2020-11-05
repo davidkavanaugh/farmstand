@@ -19,9 +19,14 @@ form {
 }
 
 input {
-  margin-top: 5px;
+  margin: 5px 5px;
 }
 
 #submit-btn {
   margin-top: 10px;
+}
+
+#sign-in-alert {
+  height: 20px;
+  color: red;
 }

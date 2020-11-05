@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
 from sign_up.models import User
+from django.contrib import messages
 import bcrypt
 
 
@@ -30,10 +31,12 @@ def get_user(request):
             logged_user = user[0]
             # check if password input matches
             if bcrypt.checkpw(request.POST['password'].encode(), logged_user.password.encode()):
-                print("password matches")
                 request.session['user_id'] = logged_user.id
                 return redirect('/me')
-        print("does not match")
+            else:
+                messages.error(request, "Email / Password incorrect")
+        else:
+            messages.error(request, "User not found")
         return redirect('/sign-in')
 
     except Exception:
