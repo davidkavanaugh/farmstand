@@ -35,23 +35,15 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'cart',
-    'me',
-    'product',
-    'products',
-    'results',
-    'sign_in',
-    'sign_up',
-    'store',
     'search',
-    'logout',
-    'add_product',
+    'users',
+    'products',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.staticfiles'
 ]
 
 MIDDLEWARE = [

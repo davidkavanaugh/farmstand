@@ -18,15 +18,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('', include("search.urls")),
-    path('add-product/', include("add_product.urls")),
-    path('cart/', include('cart.urls')),
-    path('me/', include('me.urls')),
-    path('product/', include('product.urls')),
-    path('products/', include('products.urls')),
-    path('results/', include('results.urls')),
-    path('sign-in/', include('sign_in.urls')),
-    path('sign-up/', include('sign_up.urls')),
-    path('store/', include('store.urls')),
-    path('logout/', include('logout.urls'))
+    path('users/', include("users.urls")),
+    path('products/', include("products.urls"))
     # path('admin/', admin.site.urls),
 ]

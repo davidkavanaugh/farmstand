@@ -21,10 +21,7 @@
       integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
       crossorigin="anonymous"
     ></script>
-    {% load static %}
-    <script type="text/javascript" src="{% static 'search.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'search.css' %}" />
-    <title>FarmStand</title>
+    <title>FarmStand: {{user.first_name}} {{user.last_name}}</title>
   </head>
   <body>
     <!--NAVIGATION-->
@@ -50,28 +47,16 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="/users/sign-in">Sign In</a></li>
-            <li><a href="/users/new">Register</a></li>
             <li><a href="#">Shopping Cart</a></li>
+            <li><a href="/users/logout">Logout</a></li>
           </ul>
         </div>
         <!-- /.navbar-collapse -->
       </div>
       <!-- /.container-fluid -->
     </nav>
-    <!--SEARCH-->
-    <div id="search-wrapper">
-      <h1>Find Local Farmers</h1>
-      <form action="#" method="POST">
-        <input
-          type="text"
-          pattern="[0-9]{5}"
-          name="zipCode"
-          id="zipCode"
-          title="Five digit zip code"
-        />
-        <input type="submit" value="GO" />
-      </form>
+    <div class="container">
+      <h1>Welcome {{user.first_name}}</h1>
     </div>
   </body>
 </html>

@@ -1,6 +1,13 @@
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
 
 
 def index(request):
     return render(request, "products.html")
+
+
+def new_product(request):
+    return render(request, "new-product.html")
+
+
+def create_product(request):
+    pass
