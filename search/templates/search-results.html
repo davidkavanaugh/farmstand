@@ -66,32 +66,10 @@
       <!-- /.container-fluid -->
     </nav>
     <!--SEARCH-->
-    <div id="search-wrapper">
-      <h1>Find Local Farmers</h1>
-      <div id="search-errors">
-        {%if messages%}{%for message in messages%}{{message}}{%endfor%}{%endif%}
-      </div>
-      <form action="get-farms" method="POST">
-        {% csrf_token %}
-        <input
-          type="text"
-          placeholder="Search by Zip Code"
-          pattern="[0-9]{5}"
-          name="zipCode"
-          id="zipCode"
-          title="Five digit zip code"
-        />
-        <select name="search-radius">
-          <option value="">Distance in Miles</option>
-          <option value="0">0</option>
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="15">15</option>
-          <option value="20">20</option>
-          <option value="25">25</option>
-        </select>
-        <input id="search-btn" type="submit" value="GO" />
-      </form>
+    <div id="results-wrapper">
+      {%for farm in farms%}
+      <div>{{farm.first_name}}</div>
+      {%endfor%}
     </div>
   </body>
 </html>

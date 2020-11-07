@@ -22,7 +22,8 @@ class User(models.Model):
         Address,
         on_delete=models.CASCADE,
         primary_key=True,
-        default=''
+        default='',
+        related_name="user"
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
