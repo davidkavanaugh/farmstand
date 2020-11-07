@@ -57,6 +57,14 @@
     </nav>
     <div class="container">
       <h1>Welcome {{user.first_name}}</h1>
+      <section id="inventory">
+        <button onclick="window.location.href='/products/new'">
+          Add Product
+        </button>
+        {% for product in user.products.all %}
+        <div>{{product.name}}</div>
+        {% endfor %}
+      </section>
     </div>
   </body>
 </html>

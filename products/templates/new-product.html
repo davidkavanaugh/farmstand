@@ -21,43 +21,69 @@
       integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
       crossorigin="anonymous"
     ></script>
+    {%load static%}
+    <link rel="stylesheet" href="{% static 'add-product.css'%}" />
     <title>FarmStand: Add Product</title>
   </head>
   <body>
     <!--NAVIGATION-->
     <nav class="navbar navbar-default">
-      <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-          <button
-            type="button"
-            class="navbar-toggle collapsed"
-            data-toggle="collapse"
-            data-target="#bs-example-navbar-collapse-1"
-            aria-expanded="false"
-          >
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="/">FarmStand</a>
-        </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="/cart">Shopping Cart</a></li>
-            <li><a href="/logout">Logout</a></li>
-          </ul>
-        </div>
-        <!-- /.navbar-collapse -->
+      <div
+        style="
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+        "
+      >
+        <a class="navbar-brand" href="#">Add Product</a>
+        <button
+          id="cancel-btn"
+          type="button"
+          class="btn btn-light"
+          onclick="window.location.href='/products/new/cancel'"
+        >
+          Cancel
+        </button>
       </div>
       <!-- /.container-fluid -->
     </nav>
     <div class="container">
-      <h1>Add a Product to Your Farm Stand</h1>
-      <form></form>
+      <form action="create" method="POST">
+        {% csrf_token %}
+        <input
+          name="product_name"
+          placeholder="Name: 'Apples'"
+          type="text"
+          required
+        />
+        <input
+          name="product_description"
+          placeholder="Description"
+          type="text"
+        />
+        <input
+          name="product_price"
+          placeholder="Price: $1.99"
+          type="text"
+          pattern="(0\.((0[1-9]{1})|([1-9]{1}([0-9]{1})?)))|(([1-9]+[0-9]*)(\.([0-9]{1,2}))?)"
+          title="Please enter a valid dollar amount"
+          required
+        />
+        <input
+          name="product_unit"
+          placeholder="Per: gal / lb / ea"
+          type="text"
+          required
+        />
+        <input
+          name="product_quantity"
+          placeholder="Quantity"
+          type="number"
+          required
+        />
+        <input id="submit-btn" type="submit" value="Submit" />
+      </form>
     </div>
   </body>
 </html>

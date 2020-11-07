@@ -112,7 +112,11 @@ def sign_up_success(request):
 
 
 def sign_in(request):
-    return render(request, "sign-in.html")
+    if "user_id" not in request.session:
+        return render(request, "sign-in.html")
+    else:
+        user_id = request.session["user_id"]
+        return redirect("/users/"+user_id)
 
 
 def get_user(request):

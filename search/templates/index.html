@@ -50,9 +50,15 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav navbar-right">
+            {%if request.session.user_id%}
+            <li><a href="/users/{{user_id}}">My Account</a></li>
+            <li><a href="#">Shopping Cart</a></li>
+            <li><a href="/users/logout">Logout</a></li>
+            {%else%}
             <li><a href="/users/sign-in">Sign In</a></li>
             <li><a href="/users/new">Register</a></li>
             <li><a href="#">Shopping Cart</a></li>
+            {%endif%}
           </ul>
         </div>
         <!-- /.navbar-collapse -->
