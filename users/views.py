@@ -23,9 +23,9 @@ def new_user(request):
 def register_user(request):
     errors = User.objects.basic_validator(request.POST)
     if len(errors) > 0:
-        # FIX ME!!!
+
         for key, value in errors.items():
-            messages.error(request, value)
+            messages.error(request, value, extra_tags=key)
         # redirect the user back to the form to fix the errors
         request.session['signUpData'] = request.POST
         return redirect('/users/new')
