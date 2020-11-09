@@ -60,13 +60,15 @@
     <!--SIGN IN-->
     <div id="sign-in-wrapper">
       <h2>Sign In</h2>
-      <div id="sign-in-alert">
-        {%if messages%}{%for message in messages%}{{message}}{%endfor%}{%endif%}
+      <div id="sign-in-messages">
+        {%if messages%}{%for message in messages%}<span class="{{message.tags}}"
+          >{{message}}</span
+        >{%endfor%}{%endif%}
       </div>
       <form action="get-user" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <input type="email" name="email" id="email" />
-        <input type="password" name="password" id="password" />
+        <input type="email" name="email" id="email" required />
+        <input type="password" name="password" id="password" required />
         <input type="submit" value="Sign In" id="submit-btn" />
       </form>
     </div>

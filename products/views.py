@@ -23,7 +23,7 @@ def create_product(request):
         price=price,
         unit=request.POST["product_unit"],
         quantity=request.POST["product_quantity"],
-        farmer=User.objects.get(id=request.session["user_id"])
+        farmer=User.objects.get(_id=request.session["user_id"])
     )
     return redirect('/users')
 

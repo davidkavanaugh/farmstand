@@ -35,7 +35,10 @@ select {
   width: 50%;
 }
 
-#sign-up-errors {
-  height: 20px;
+.error {
   color: red;
+}
+
+li {
+  list-style: none;
 }

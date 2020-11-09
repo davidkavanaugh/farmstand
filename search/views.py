@@ -32,5 +32,6 @@ def get_farms(request):
     for location in res:
         addresses = Address.objects.filter(zip_code=location["code"])
         for address in addresses:
-            context["farms"].append(User.objects.get(id=address.user.id))
+            print(address)
+            context["farms"].append(User.objects.get(_id=address.user._id))
     return render(request, "search-results.html", context)
