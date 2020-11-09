@@ -4,6 +4,7 @@ import requests
 from django.contrib import messages
 import json
 from users.models import User, Address
+import os
 
 
 def index(request):
@@ -14,7 +15,7 @@ def get_farms(request):
     context = {
         "farms": []
     }
-    headers = {"apikey": "67f20620-2093-11eb-9f9f-530d52d6fa49"}
+    headers = {"apikey": os.getenv("ZIP_KEY")}
 
     params = (
         ("code", request.POST["zipCode"]),
@@ -24,7 +25,7 @@ def get_farms(request):
     )
 
     response = requests.get(
-        'https://app.zipcodebase.com/api/v1/radius', headers=headers, params=params)
+        os.getenv("ZIP_DOMAIN"), headers=headers, params=params)
     res = json.loads(response.text)["results"]
     if len(res) == 0:
         messages.error(request, "No Farms Found")
