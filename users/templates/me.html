@@ -57,12 +57,20 @@
     </nav>
     <div class="container">
       <h1>Welcome {{user.first_name}}</h1>
+      <img
+        src="https://farms-stand-bucket.s3-us-west-2.amazonaws.com/farmstand/{{user.image}}"
+        alt="profile-image"
+      />
       <section id="inventory">
         <button onclick="window.location.href='/products/new'">
           Add Product
         </button>
         {% for product in user.products.all %}
         <div>{{product.name}}</div>
+        <img
+          src="https://farms-stand-bucket.s3-us-west-2.amazonaws.com/farmstand/{{product.image}}"
+          alt="product image"
+        />
         {% endfor %}
       </section>
     </div>

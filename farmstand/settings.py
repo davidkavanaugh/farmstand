@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles'
+    'django.contrib.staticfiles',
+    'django_s3_storage'
 ]
 
 MIDDLEWARE = [
@@ -125,3 +126,29 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+DEFAULT_FILE_STORAGE = "django_s3_storage.storage.S3Storage"
+
+# The AWS region to connect to.
+AWS_REGION = os.getenv("AWS_REGION")
+
+# The AWS access key to use.
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+
+# The AWS secret access key to use.
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+
+# The optional AWS session token to use.
+AWS_SESSION_TOKEN = os.getenv("AWS_SESSION_TOKEN")
+
+AWS_S3_BUCKET_NAME = os.getenv("AWS_S3_BUCKET_NAME")
+
+AWS_S3_ADDRESSING_STYLE = "auto"
+
+AWS_S3_ENDPOINT_URL = ""
+
+AWS_S3_KEY_PREFIX = "farmstand"
+
+AWS_S3_BUCKET_AUTH = False
+
+AWS_S3_GZIP = False

@@ -23,6 +23,7 @@ def create_product(request):
         price=price,
         unit=request.POST["product_unit"],
         quantity=request.POST["product_quantity"],
+        image=request.FILES['image'],
         farmer=User.objects.get(_id=request.session["user_id"])
     )
     return redirect('/users')

@@ -58,7 +58,7 @@
       </div>
       <!-- /.container-fluid -->
     </nav>
-    <!--SIGN IN-->
+    <!--SIGN UP-->
     <div id="sign-up-wrapper">
       <h2>Register</h2>
       <form action="create" method="POST" enctype="multipart/form-data">
@@ -76,6 +76,7 @@
           value="{{request.session.signUpData.first_name}}"
         />
         {%else%}
+        <div class="form-error"></div>
         <input
           type="text"
           name="first_name"
@@ -96,6 +97,7 @@
           value="{{request.session.signUpData.last_name}}"
         />
         {%else%}
+        <div class="form-error"></div>
         <input type="text" name="last_name" id="last_name" placeholder="Last" />
         {%endif%} {%if request.session.signUpData%}
         <div class="form-error">
@@ -111,6 +113,7 @@
           value="{{request.session.signUpData.farm_name}}"
         />
         {%else%}
+        <div class="form-error"></div>
         <input
           type="text"
           name="farm_name"
@@ -131,6 +134,7 @@
           value="{{request.session.signUpData.email}}"
         />
         {%else%}
+        <div class="form-error"></div>
         <input type="text" name="email" id="email" placeholder="Email" />
         {%endif%} {%if request.session.signUpData%}
         <div class="form-error">
@@ -145,6 +149,7 @@
           placeholder="Password"
         />
         {%else%}
+        <div class="form-error"></div>
         <input
           type="password"
           name="password_1"
@@ -173,6 +178,7 @@
           value="{{request.session.signUpData.street_1}}"
         />
         {%else%}
+        <div class="form-error"></div>
         <input
           type="text"
           name="street_1"
@@ -202,6 +208,7 @@
           value="{{request.session.signUpData.city}}"
         />
         {%else%}
+        <div class="form-error"></div>
         <input type="text" name="city" id="city" placeholder="City" />
         {%endif%} {%if request.session.signUpData %}
         <div class="form-error">
@@ -210,6 +217,7 @@
           {%endif%} {% endfor %}
         </div>
         {%endif%}
+        <div class="form-error"></div>
         <select name="state" id="state">
           <option value="">State</option>
           <option value="AL">Alabama</option>
@@ -278,6 +286,7 @@
           value="{{request.session.signUpData.zip_code}}"
         />
         {%else%}
+        <div class="form-error"></div>
         <input
           type="text"
           name="zip_code"
@@ -285,8 +294,25 @@
           placeholder="Zip Code"
         />
         {%endif%}
+        <br />
+        <label class="btn" id="upload-btn" for="file">Upload Image</label>
+        <input
+          type="file"
+          accept="image/*"
+          name="image"
+          id="file"
+          style="display: none"
+          onchange="loadFile(event)"
+        />
+        <img id="output" width="275px" />
         <input type="submit" value="Register" id="submit-btn" />
       </form>
     </div>
+    <script>
+      var loadFile = function (event) {
+        var image = document.getElementById("output");
+        image.src = URL.createObjectURL(event.target.files[0]);
+      };
+    </script>
   </body>
 </html>

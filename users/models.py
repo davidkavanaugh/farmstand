@@ -1,5 +1,7 @@
 from django.db import models
+from django_s3_storage.storage import S3Storage
 import re
+from django.conf import settings
 
 
 class SignUpManager(models.Manager):
@@ -53,6 +55,9 @@ class Address(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
+aws_storage = S3Storage(aws_s3_bucket_name=settings.AWS_S3_BUCKET_NAME)
+
+
 class User(models.Model):
     _id = models.CharField(max_length=255, primary_key=True, default='')
     first_name = models.CharField(max_length=255)
@@ -66,6 +71,7 @@ class User(models.Model):
         default='',
         related_name="user"
     )
+    image = models.ImageField(storage=aws_storage, default="")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = SignUpManager()

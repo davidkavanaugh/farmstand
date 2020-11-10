@@ -49,8 +49,9 @@ def register_user(request):
             last_name=request.POST["last_name"],
             farm_name=request.POST["farm_name"],
             email=request.POST["email"],
-            address=user_address,
             password=pw_hash,
+            address=user_address,
+            image=request.FILES['image']
         )
         new_user.save()
         if "signUpData" in request.session:
