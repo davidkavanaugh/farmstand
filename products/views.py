@@ -31,3 +31,10 @@ def create_product(request):
 
 def cancel_new_product(request):
     return redirect("/users")
+
+
+def my_products(request, user_id):
+    context = {
+        "user": User.objects.get(_id=user_id)
+    }
+    return render(request, "my-products.html", context)

@@ -94,6 +94,17 @@ def me(request, user_id):
         return render(request, "me.html", context)
 
 
+def get_inventory(request, user_id):
+    context = {
+        "user": User.objects.get(_id=user_id)
+    }
+    return render(request, "inventory.html", context)
+
+
+def get_cart(request):
+    return render(request, "shopping-cart.html")
+
+
 def logout(request):
     if "user_id" in request.session:
         del request.session["user_id"]
