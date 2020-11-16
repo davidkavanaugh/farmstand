@@ -21,7 +21,13 @@
       integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
       crossorigin="anonymous"
     ></script>
-    <title>FarmStand: My Account</title>
+    {%load static%}
+    <script
+      type="text/javascript"
+      src="{% static 'edit-profile.js' %}"
+    ></script>
+    <link rel="stylesheet" href="{% static 'edit-profile.css' %}" />
+    <title>FarmStand: Edit My Profile</title>
   </head>
   <body>
     <!--NAVIGATION-->
@@ -31,15 +37,11 @@
         <div class="navbar-header">
           <button
             type="button"
-            class="navbar-toggle collapsed"
-            data-toggle="collapse"
-            data-target="#bs-example-navbar-collapse-1"
-            aria-expanded="false"
+            class="navbar-toggle"
+            style="padding: 6px 10px"
+            onclick="window.location.href='/users/{{user.id}}/edit/cancel'"
           >
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
+            Cancel
           </button>
           <a class="navbar-brand" href="/">FarmStand</a>
         </div>
@@ -47,18 +49,24 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Shopping Cart</a></li>
-            <li><a href="/users/logout">Logout</a></li>
+            <li>
+              <a class="btn btn-light" href="/users/{{user.id}}/edit/cancel"
+                >Cancel</a
+              >
+            </li>
           </ul>
         </div>
         <!-- /.navbar-collapse -->
       </div>
       <!-- /.container-fluid -->
     </nav>
-    <div class="container">
-      <h1>{{user.farm_name}}</h1>
-      <h4>Account Settings</h4>
-      <form action="update" method="POST" enctype="multipart/form-data">
+    <div id="edit-me" class="container">
+      <h3>Edit Profile</h3>
+      <form
+        action="/users/{{user.id}}/update"
+        method="POST"
+        enctype="multipart/form-data"
+      >
         {% csrf_token %}
         <div class="form-error">
           {%for message in messages%} {%if 'first_name' in message.extra_tags%}
@@ -119,7 +127,7 @@
           id="password_1"
           placeholder="Change Password"
         />
-        <div class="form-errors"></div>
+        <div class="form-error"></div>
         <input
           type="password"
           name="password_2"
@@ -241,6 +249,11 @@
           style="display: none"
           onchange="loadFile(event)"
         />
+        <div class="form-error">
+          {%for message in messages%} {%if 'image' in message.extra_tags%}
+          <span class="{{message.tags}}">{{message}}</span>
+          {%endif%} {% endfor %}
+        </div>
         <img
           src="https://farms-stand-bucket.s3-us-west-2.amazonaws.com/farmstand/{{user.image}}"
           id="output"

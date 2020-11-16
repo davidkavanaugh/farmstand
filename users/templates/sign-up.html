@@ -128,7 +128,7 @@
           {%endif%} {% endfor %}
         </div>
         <input
-          type="email"
+          type="text"
           name="email"
           id="email"
           placeholder="Email"
@@ -297,6 +297,11 @@
         />
         {%endif%}
         <br />
+        <div class="form-error">
+          {%for message in messages%} {%if 'image' in message.extra_tags%}
+          <span class="{{message.tags}}">{{message}}</span>
+          {%endif%} {% endfor %}
+        </div>
         <label class="btn" id="upload-btn" for="file">Upload Image</label>
         <input
           type="file"

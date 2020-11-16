@@ -9,7 +9,7 @@
   width: 100%;
 }
 
-#sign-up-wrapper {
+#edit-me {
   padding-top: 60px;
   min-height: 50vh;
   display: flex;
@@ -45,6 +45,7 @@ select {
   color: red;
   font-size: 13px;
 }
+
 .form-error {
   height: 20px;
 }
@@ -56,6 +57,5 @@ select {
 }
 
 img {
-  margin-top: 10px;
   margin-bottom: 10px;
 }

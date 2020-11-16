@@ -65,9 +65,34 @@
       </div>
       <!-- /.container-fluid -->
     </nav>
-    <div class="container">
+    <div id="me" class="container">
+      {%for message in messages%} {%if 'update' in message.extra_tags%}
+      <span class="{{message.tags}}">{{message}}</span>
+      {%endif%} {% endfor %}
       <h1>{{user.first_name}} {{user.last_name}}</h1>
-      <div id="editor-btn" class="btn-primary">
+      <img
+        id="avatar"
+        src="https://farms-stand-bucket.s3-us-west-2.amazonaws.com/farmstand/{{user.image}}"
+        alt="{{user_farm_name}}"
+      />
+      <section id="account_details">
+        <div class="key">Farm Name:</div>
+        <div class="value">{{user.farm_name}}</div>
+        <div class="key">Email:</div>
+        <div class="value">{{user.email}}</div>
+        <div class="key">Address:</div>
+        <div class="value">{{user.address.street_1}}</div>
+        <div class="value">{{user.address.street_2}}</div>
+        <div class="value">
+          {{user.address.city}}, {{user.address.state}}
+          {{user.address.zip_code}}
+        </div>
+      </section>
+      <div
+        id="editor-btn"
+        class="btn-primary"
+        onclick="window.location.href='/users/{{user.id}}/edit'"
+      >
         <svg
           width="1em"
           height="1em"
