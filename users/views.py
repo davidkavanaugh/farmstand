@@ -139,12 +139,6 @@ def update_user(request, user_id):
 def cancel_edit_user(request, user_id):
     return redirect(f'/users/{user_id}')
 
-def get_inventory(request, user_id):
-    context = {
-        "user": User.objects.get(_id=user_id)
-    }
-    return render(request, "inventory.html", context)
-
 
 def get_cart(request):
     return render(request, "shopping-cart.html")

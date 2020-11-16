@@ -53,9 +53,7 @@
             {%if request.session.user_id%}
             <li><a href="/users/{{request.session.user_id}}">Account</a></li>
             <li>
-              <a href="/users/{{request.session.user_id}}/inventory"
-                >Inventory</a
-              >
+              <a href="/products/{{request.session.user_id}}">Inventory</a>
             </li>
             <li class="active"><a href="/users/cart">Shopping Cart</a></li>
             <li><a href="/users/logout">Logout</a></li>

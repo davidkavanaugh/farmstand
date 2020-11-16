@@ -1,13 +1,29 @@
 from django.shortcuts import render, redirect
 from users.models import User
 from .models import Product
+from django.contrib import messages
 
+
+def get_products(request, user_id):
+    user = User.objects.get(_id=user_id)
+    context = {"farmer": user}
+    if 'user_id' in request.session:
+        if str(user_id) == str(user._id):
+            return render(request, "my_products.html", context)
+    return render(request, "all_products.html", context)
 
 def new_product(request):
-    return render(request, "new-product.html")
+    return render(request, "create_product.html")
 
 
 def create_product(request):
+    errors = Product.objects.product_validation(request.POST, request.FILES)
+    if len(errors) > 0:
+        for key, value in errors.items():
+            messages.error(request, value, extra_tags=key)
+        # redirect the user back to the form to fix the errors
+        request.session['postData'] = request.POST
+        return redirect('/products/create')
     # CONVERT PRICE
     price = request.POST['product_price']
     if "." in price:
@@ -33,8 +49,3 @@ def cancel_new_product(request):
     return redirect("/users")
 
 
-def my_products(request, user_id):
-    context = {
-        "user": User.objects.get(_id=user_id)
-    }
-    return render(request, "my-products.html", context)

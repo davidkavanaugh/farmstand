@@ -32,31 +32,23 @@
   <body>
     <!--NAVIGATION-->
     <nav class="navbar navbar-default">
-      <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-          <button
-            type="button"
-            class="navbar-toggle"
-            style="padding: 6px 10px"
-            onclick="window.location.href='/users/{{user.id}}/edit/cancel'"
-          >
-            Cancel
-          </button>
-          <a class="navbar-brand" href="/">FarmStand</a>
-        </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          <ul class="nav navbar-nav navbar-right">
-            <li>
-              <a class="btn btn-light" href="/users/{{user.id}}/edit/cancel"
-                >Cancel</a
-              >
-            </li>
-          </ul>
-        </div>
-        <!-- /.navbar-collapse -->
+      <div
+        style="
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+        "
+      >
+        <a class="navbar-brand" href="#">FarmStand</a>
+        <button
+          id="cancel-btn"
+          type="button"
+          class="btn btn-light"
+          onclick="window.location.href='/products/new/cancel'"
+        >
+          Cancel
+        </button>
       </div>
       <!-- /.container-fluid -->
     </nav>

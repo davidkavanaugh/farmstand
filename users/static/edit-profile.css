@@ -9,6 +9,10 @@
   width: 100%;
 }
 
+#cancel-btn {
+  margin-right: 7px;
+}
+
 #edit-me {
   padding-top: 60px;
   min-height: 50vh;
