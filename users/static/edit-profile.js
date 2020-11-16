@@ -1,6 +1,6 @@
 $(document).ready(function () {
   const removeErrors = () => {
-    $("#search-errors").html("");
+    $("#edit-profile-errors").html("");
   };
   $("form").keyup(removeErrors);
 });

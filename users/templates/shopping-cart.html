@@ -24,7 +24,7 @@
     {% load static %}
     <script type="text/javascript" src="{% static 'search.js' %}"></script>
     <link rel="stylesheet" href="{% static 'search.css' %}" />
-    <title>FarmStand</title>
+    <title>FarmStand: Shopping Cart</title>
   </head>
   <body>
     <!--NAVIGATION-->
@@ -57,12 +57,12 @@
                 >Inventory</a
               >
             </li>
-            <li><a href="/users/cart">Shopping Cart</a></li>
+            <li class="active"><a href="/users/cart">Shopping Cart</a></li>
             <li><a href="/users/logout">Logout</a></li>
             {%else%}
             <li><a href="/users/sign-in">Sign In</a></li>
             <li><a href="/users/new">Register</a></li>
-            <li><a href="/users/cart">Shopping Cart</a></li>
+            <li class="active"><a href="/users/cart">Shopping Cart</a></li>
             {%endif%}
           </ul>
         </div>
@@ -70,34 +70,6 @@
       </div>
       <!-- /.container-fluid -->
     </nav>
-    <!--SEARCH-->
-    <div id="search-wrapper">
-      <h1>Find Local Farmers</h1>
-      <div id="search-errors">
-        {%if messages%}{%for message in messages%}{{message}}{%endfor%}{%endif%}
-      </div>
-      <form action="get-farms" method="POST">
-        {% csrf_token %}
-        <input
-          type="text"
-          placeholder="Search by Zip Code"
-          pattern="[0-9]{5}"
-          name="zipCode"
-          id="zipCode"
-          title="Five digit zip code"
-          required
-        />
-        <select name="search-radius" required>
-          <option value="">Distance in Miles</option>
-          <option value="1">1</option>
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="15">15</option>
-          <option value="20">20</option>
-          <option value="25">25</option>
-        </select>
-        <input id="search-btn" type="submit" value="GO" />
-      </form>
-    </div>
+    <div class="container">Shopping Cart</div>
   </body>
 </html>

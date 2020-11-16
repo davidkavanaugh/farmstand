@@ -22,9 +22,8 @@
       crossorigin="anonymous"
     ></script>
     {% load static %}
-    <script type="text/javascript" src="{% static 'search.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'search.css' %}" />
-    <title>FarmStand</title>
+    <link rel="stylesheet" href="{% static 'sign-in.css' %}" />
+    <title>FarmStand: Sign In</title>
   </head>
   <body>
     <!--NAVIGATION-->
@@ -50,53 +49,28 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav navbar-right">
-            {%if request.session.user_id%}
-            <li><a href="/users/{{request.session.user_id}}">Account</a></li>
-            <li>
-              <a href="/users/{{request.session.user_id}}/inventory"
-                >Inventory</a
-              >
-            </li>
-            <li><a href="/users/cart">Shopping Cart</a></li>
-            <li><a href="/users/logout">Logout</a></li>
-            {%else%}
-            <li><a href="/users/sign-in">Sign In</a></li>
+            <li class="active"><a href="/users/sign-in">Sign In</a></li>
             <li><a href="/users/new">Register</a></li>
             <li><a href="/users/cart">Shopping Cart</a></li>
-            {%endif%}
           </ul>
         </div>
         <!-- /.navbar-collapse -->
       </div>
       <!-- /.container-fluid -->
     </nav>
-    <!--SEARCH-->
-    <div id="search-wrapper">
-      <h1>Find Local Farmers</h1>
-      <div id="search-errors">
-        {%if messages%}{%for message in messages%}{{message}}{%endfor%}{%endif%}
+    <!--SIGN IN-->
+    <div id="sign-in-wrapper">
+      <h2>Sign In</h2>
+      <div id="sign-in-messages">
+        {%if messages%}{%for message in messages%}<span class="{{message.tags}}"
+          >{{message}}</span
+        >{%endfor%}{%endif%}
       </div>
-      <form action="get-farms" method="POST">
+      <form action="get-user" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <input
-          type="text"
-          placeholder="Search by Zip Code"
-          pattern="[0-9]{5}"
-          name="zipCode"
-          id="zipCode"
-          title="Five digit zip code"
-          required
-        />
-        <select name="search-radius" required>
-          <option value="">Distance in Miles</option>
-          <option value="1">1</option>
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="15">15</option>
-          <option value="20">20</option>
-          <option value="25">25</option>
-        </select>
-        <input id="search-btn" type="submit" value="GO" />
+        <input type="email" name="email" id="email" required />
+        <input type="password" name="password" id="password" required />
+        <input type="submit" value="Sign In" id="submit-btn" />
       </form>
     </div>
   </body>
