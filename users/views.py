@@ -21,7 +21,7 @@ def new_user(request):
 
 
 def register_user(request):
-    errors = User.objects.basic_validator(request.POST)
+    errors = User.objects.signup_validator(request.POST, request.FILES)
     if len(errors) > 0:
 
         for key, value in errors.items():
@@ -29,8 +29,6 @@ def register_user(request):
         # redirect the user back to the form to fix the errors
         request.session['signUpData'] = request.POST
         return redirect('/users/new')
-        # if "signUpData" in request.session:
-        #     del request.session["signUpData"]
     else:
         user_address = Address(
             street_1=request.POST["street_1"],
@@ -51,8 +49,9 @@ def register_user(request):
             email=request.POST["email"],
             password=pw_hash,
             address=user_address,
-            image=request.FILES['image']
         )
+        if 'image' in request.FILES:
+            new_user.image=request.FILES['image']
         new_user.save()
         if "signUpData" in request.session:
             del request.session["signUpData"]
@@ -85,14 +84,60 @@ def get_user(request):
 
 
 def me(request, user_id):
-    context = {
-        "user": User.objects.get(_id=user_id)
-    }
     if "user_id" not in request.session:
         return redirect('/users/sign-in')
     else:
+        context = {}
+        user = User.objects.get(_id=user_id)
+        user.id = user._id
+        context['user'] = user
         return render(request, "me.html", context)
 
+def edit_user(request, user_id):
+    if "user_id" not in request.session:
+        return redirect('/users/sign-in')
+    else:
+        context = {}
+        user = User.objects.get(_id=user_id)
+        user.id = user._id
+        context['user'] = user
+        return render(request, "edit.html", context)
+
+def update_user(request, user_id):
+    errors = User.objects.update_validator(request.POST, request.FILES, request.session['user_id'])
+    if len(errors) > 0:
+        for key, value in errors.items():
+            messages.error(request, value, extra_tags=key)
+        # redirect the user back to the form to fix the errors
+        request.session['postData'] = request.POST
+        return redirect(f'/users/{user_id}/edit')
+    else: 
+        user = User.objects.get(_id=user_id)
+        if 'password_1' in request.POST:
+            pw_hash = bcrypt.hashpw(
+                request.POST['password_1'].encode(), bcrypt.gensalt()).decode()
+            user.password = pw_hash
+        user.first_name=request.POST["first_name"]
+        user.last_name=request.POST["last_name"]
+        user.farm_name=request.POST["farm_name"]
+        user.email=request.POST["email"]
+        user.address.street_1=request.POST['street_1']
+        user.address.street_2=request.POST['street_2']
+        user.address.city=request.POST['city']
+        user.address.state=request.POST['state']
+        user.address.zip_code=request.POST['zip_code']
+        if 'image' in request.FILES:
+            user.image=request.FILES['image']
+        user.address.save()
+        user.save()
+        if "postData" in request.session:
+            del request.session["postData"]
+        messages.success(request, "Profile Updated!", extra_tags="update")
+
+    return redirect(f'/users/{user_id}')
+
+def cancel_edit_user(request, user_id):
+    return redirect(f'/users/{user_id}')
 
 def get_inventory(request, user_id):
     context = {
