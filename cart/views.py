@@ -5,7 +5,17 @@ from cart.models import Cart, CartItem
 
 
 def index(request):
-    return render(request, "cart.html")
+    context = {}
+    if 'user_id' in request.session:
+        user = User.objects.get(_id=request.session['user_id'])
+        context['user'] = user
+        if cart in user:
+            print('has cart')
+    else: 
+        print('not logged in')
+        if 'cart' in request.session:
+            context['cart'] = request.session['cart']
+    return render(request, "cart.html", context)
 
 def add_to_cart(request, product_id):
     product = Product.objects.get(id=product_id)

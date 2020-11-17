@@ -55,12 +55,12 @@
             <li>
               <a href="/products/{{request.session.user_id}}">Inventory</a>
             </li>
-            <li><a href="/users/cart">Shopping Cart</a></li>
+            <li><a href="/cart">Shopping Cart</a></li>
             <li><a href="/users/logout">Logout</a></li>
             {%else%}
             <li><a href="/users/sign-in">Sign In</a></li>
             <li><a href="/users/new">Register</a></li>
-            <li><a href="/users/cart">Shopping Cart</a></li>
+            <li><a href="/cart">Shopping Cart</a></li>
             {%endif%}
           </ul>
         </div>
