@@ -3,6 +3,16 @@
   padding: 0;
 }
 
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+.container {
+  padding-top: 60px;
+}
+
 #cancel-btn {
   margin-right: 7px;
 }
@@ -18,10 +28,27 @@ form {
 
 input {
   width: 100%;
-  margin-top: 5px;
+  padding: 3px;
+  margin-bottom: 2px;  
+}
+
+.message{
+  height: 20px;
+}
+
+.error {
+  color: red;
 }
 
 #submit-btn {
   margin-top: 10px;
+  margin-bottom: 50px;
   width: 50%;
+}
+
+#upload-btn {
+  cursor: pointer;
+  border: 1px solid black;
+  border-radius: 3px;
+  margin-bottom: 10px;
 }

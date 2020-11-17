@@ -22,7 +22,7 @@
       crossorigin="anonymous"
     ></script>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'inventory.css' %}" />
+    <link rel="stylesheet" href="{% static 'list-products.css' %}" />
     <title>FarmStand: My Inventory</title>
   </head>
   <body>
@@ -63,10 +63,36 @@
     </nav>
     <div class="container">
       <h1>{{farmer.farm_name}}</h1>
+      <div class="message">
+      {%if messages%}
+      {%for message in messages%}
+      {%if message.tags == 'success'%}
+      <div class="{{message.tags}}">{{message}}</div>
+      {%endif%}
+      {%endfor%}
+      {%endif%}
+      </div>
+      <secion id="my_products">
+        {%for product in products%}
+        <div class="product btn btn-light product-btn"
+          onclick="window.location.href='/products/{{product.id}}'"
+        >
+          <img src="https://farms-stand-bucket.s3-us-west-2.amazonaws.com/farmstand/{{product.image}}" alt="product image">
+          <div class="details">
+            <h3>{{product.name}}({{product.quantity}})</h3>
+            <div class="meta">
+              <div class="price">${{product.price}}</div>
+              <div class="per">/</div>
+              <div class="unit">{{product.unit}}</div>
+            </div>
+          </div>
+        </div>
+        {%endfor%}
+      </secion>
     </div>
     <div
       id="add-btn"
-      class="btn-primary"
+      class="btn-danger"
       onclick="window.location.href='/products/new'"
     >
       <svg

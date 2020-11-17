@@ -229,7 +229,11 @@
           placeholder="Zip Code"
           value="{{user.address.zip_code}}"
         />
-        <br />
+        <div class="form-error">
+          {%for message in messages%} {%if 'image' in message.extra_tags%}
+          <span class="{{message.tags}}">{{message}}</span>
+          {%endif%} {% endfor %}
+        </div>
         <label class="btn" id="upload-btn" for="file"
           >Change Profile Image</label
         ><br />
@@ -241,11 +245,6 @@
           style="display: none"
           onchange="loadFile(event)"
         />
-        <div class="form-error">
-          {%for message in messages%} {%if 'image' in message.extra_tags%}
-          <span class="{{message.tags}}">{{message}}</span>
-          {%endif%} {% endfor %}
-        </div>
         <img
           src="https://farms-stand-bucket.s3-us-west-2.amazonaws.com/farmstand/{{user.image}}"
           id="output"

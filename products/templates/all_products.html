@@ -22,8 +22,8 @@
       crossorigin="anonymous"
     ></script>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'inventory.css' %}" />
-    <title>FarmStand: My Inventory</title>
+    <link rel="stylesheet" href="{% static 'list-products.css' %}" />
+    <title>FarmStand: {{farmer.farm_name}}</title>
   </head>
   <body>
     <!--NAVIGATION-->
@@ -67,8 +67,31 @@
       </div>
       <!-- /.container-fluid -->
     </nav>
+    <div>
+      <img id="farmer-avatar" src="https://farms-stand-bucket.s3-us-west-2.amazonaws.com/farmstand/{{farmer.image}}" alt="product image">
+    </div>
     <div class="container">
       <h1>{{farmer.farm_name}}</h1>
+      <secion">
+        {%for product in products%}
+        {%if product.quantity > 0%}
+        <div 
+          class="product btn btn-light"
+          onclick="window.location.href='/products/{{product.id}}'"
+        >
+          <img src="https://farms-stand-bucket.s3-us-west-2.amazonaws.com/farmstand/{{product.image}}" alt="product image">
+          <div class="details">
+            <h3>{{product.name}}</h3>
+            <div class="meta">
+              <div class="price">${{product.price}}</div>
+              <div class="per">/</div>
+              <div class="unit">{{product.unit}}</div>
+            </div>
+          </div>
+        </div>
+        {%endif%}
+        {%endfor%}
+      </secion>
     </div>
   </body>
 </html>
