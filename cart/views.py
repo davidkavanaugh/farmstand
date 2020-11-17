@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
+from users.models import User
 from products.models import Product
+from cart.models import Cart, CartItem
 
 
 def index(request):
@@ -7,48 +9,54 @@ def index(request):
 
 def add_to_cart(request, product_id):
     product = Product.objects.get(id=product_id)
-    # del request.session['cart']
-    if 'cart' in request.session:
-        cart = request.session['cart']
-    else:
-        cart = {}
-
-    # LOGGED IN
+    cart = {}
     if 'user_id' in request.session:
-        #  IF NO CART
-        print('user logged in')
-        if not request.session['user_id'] in cart:
-            cart[request.session['user_id']] = {}
-        my_cart = cart[request.session['user_id']]
-
+    # LOGGED IN
+        cart = Cart.objects.filter(user=User.objects.get(_id=request.session['user_id']))
+        if len(cart) > 0:
+            cart = cart[0]
+        # logged user has cart
+            for item in cart.items.all():
+                # logged user has this item in cart
+                if item.product.id == product_id:
+                    item.quantity_ordered += int(request.POST['quantity'])
+                    item.save()
+                    for item in cart.items.all():
+                        print(item.product.name, item.quantity_ordered)
+                    return redirect('/products/'+ product.farmer._id)
+        else:
+        # logged user no cart
+            cart = Cart.objects.create(
+                user = User.objects.get(_id=request.session['user_id'])
+            )
+        cart_item = CartItem.objects.create(
+            cart=cart,
+            product=product,
+            quantity_ordered=request.POST['quantity']
+        )
+        cart.items.add(cart_item)
+        for item in cart.items.all():
+            print(item.product.name, item.quantity_ordered)
     # NOT LOGGED IN, 
     else:
         print('user not logged in')
         # IF NO CART
-        if not 'anon' in cart:
-            cart['anon'] = {}
-        my_cart = cart['anon']
-
-    if str(product_id) in my_cart:
-        quantity = request.POST['quantity']
-        print('ADDING '+quantity+' MORE ' + product.name)
-        current_sum = my_cart[str(product_id)]
-        print('CURRENT SUM: '+product.name, current_sum)
-        new_sum = int(current_sum) + int(quantity)
-        print('NEW SUM: '+product.name, new_sum)
-        my_cart[str(product_id)] = new_sum
-    else:
-        quantity = request.POST['quantity']
-        print('ADDING '+quantity+" "+product.name)
-        my_cart[str(product_id)] = quantity
-    if 'user_id' in request.session:
-        request.session['cart'] = {
-            request.session['user_id']: my_cart
-        }
-    else:
-        request.session['cart'] = {
-            "anon": my_cart
-        }
-    print("NEW_CART: ",request.session['cart'])
+        if not 'cart' in request.session:
+            request.session['cart'] = {}
+        cart = request.session['cart']
+        if str(product_id) in cart:
+            quantity = request.POST['quantity']
+            print('ADDING '+quantity+' MORE ' + product.name)
+            current_sum = cart[str(product_id)]
+            print('CURRENT SUM: '+product.name, current_sum)
+            new_sum = int(current_sum) + int(quantity)
+            print('NEW SUM: '+product.name, new_sum)
+            cart[str(product_id)] = new_sum
+        else:
+            quantity = request.POST['quantity']
+            print('ADDING '+quantity+" "+product.name)
+            cart[str(product_id)] = quantity
+        request.session['cart'] = cart
+        print("ANON_CART: ",request.session['cart'])
     
     return redirect('/products/'+ product.farmer._id)

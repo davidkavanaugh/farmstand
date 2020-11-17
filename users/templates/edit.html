@@ -97,6 +97,18 @@
           value="{{user.farm_name}}"
         />
         <div class="form-error">
+          {%for message in messages%} {%if 'farm_description' in message.extra_tags%}
+          <span class="{{message.tags}}">{{message}}</span>
+          {%endif%} {% endfor %}
+        </div>
+        <input
+          type="text"
+          name="farm_description"
+          id="farm_description"
+          placeholder="Farm Description"
+          value="{{user.farm_description}}"
+        />
+        <div class="form-error">
           {%for message in messages%} {%if 'email' in message.extra_tags%}
           <span class="{{message.tags}}">{{message}}</span>
           {%endif%} {% endfor %}

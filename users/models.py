@@ -3,6 +3,7 @@ from django_s3_storage.storage import S3Storage
 import re
 from django.conf import settings
 from PIL import Image
+# from cart.models import Cart
 
 
 class UserManager(models.Manager):
@@ -57,6 +58,7 @@ class UserManager(models.Manager):
         FIRST_NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
         LAST_NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
         FARM_NAME_REGEX = re.compile(r'^[0-9a-zA-Z\'\s]+$')
+        FARM_DESCRIPTION = re.compile(r'^[0-9a-zA-Z\!\-\$\/\\,\'\s]+$')
         EMAIL_REGEX = re.compile(
             r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
         PASSWORD_REGEX = re.compile(
@@ -88,6 +90,9 @@ class UserManager(models.Manager):
         if not postData['farm_name'] == User.objects.get(_id=user_id).farm_name:
             if len(User.objects.filter(farm_name=postData['farm_name'])) > 0:
                 errors['farm_name'] = "Farm name already taken" 
+        if len(postData['farm_description']) > 0:
+            if not FARM_DESCRIPTION.match(postData['farm_description']):
+                errors['farm_description'] = "Please enter a valid description"
         if len(postData['password_1']) > 0:
             if not PASSWORD_REGEX.match(postData["password_1"]):
                 errors['password'] = "Password too weak"
@@ -120,6 +125,7 @@ class User(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     farm_name = models.CharField(max_length=255, default="")
+    farm_description = models.TextField(default="")
     email = models.CharField(max_length=255, default='')
     password = models.CharField(max_length=255, default="")
     address = models.OneToOneField(

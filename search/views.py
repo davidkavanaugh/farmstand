@@ -13,6 +13,7 @@ def index(request):
 
 def get_farms(request):
     context = {
+        "zipCode": request.POST['zipCode'],
         "farms": []
     }
     headers = {"apikey": os.getenv("ZIP_KEY")}
@@ -24,15 +25,22 @@ def get_farms(request):
         ("unit", "miles")
     )
 
-    response = requests.get(
-        os.getenv("ZIP_DOMAIN"), headers=headers, params=params)
-    res = json.loads(response.text)["results"]
+    # response = requests.get(
+    #     os.getenv("ZIP_DOMAIN"), headers=headers, params=params)
+    # res = json.loads(response.text)["results"]
+    res = [
+        {"location": '98296'}
+    ]
     if len(res) == 0:
         messages.error(request, "No Farms Found")
         return redirect("/")
     for location in res:
-        addresses = Address.objects.filter(zip_code=location["code"])
+        # addresses = Address.objects.filter(zip_code=location["code"])
+        addresses = Address.objects.filter(zip_code=98296)
         for address in addresses:
             print(address)
-            context["farms"].append(User.objects.get(_id=address.user._id))
+            farmer = User.objects.get(_id=address.user._id)
+            if len(farmer.products.all()) > 0:
+                farmer.id = farmer._id
+                context["farms"].append(farmer)
     return render(request, "search-results.html", context)

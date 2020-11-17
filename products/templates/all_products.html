@@ -70,8 +70,9 @@
     <div>
       <img id="farmer-avatar" src="https://farms-stand-bucket.s3-us-west-2.amazonaws.com/farmstand/{{farmer.image}}" alt="product image">
     </div>
-    <div class="container">
+    <div id="list_products" class="container">
       <h1>{{farmer.farm_name}}</h1>
+      <p>{{farmer.farm_description}}</p>
       <secion">
         {%for product in products%}
         {%if product.quantity > 0%}

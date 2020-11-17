@@ -24,7 +24,7 @@
     {% load static %}
     <script type="text/javascript" src="{% static 'search.js' %}"></script>
     <link rel="stylesheet" href="{% static 'search.css' %}" />
-    <title>FarmStand</title>
+    <title>Farms in {{zipCode}}</title>
   </head>
   <body>
     <!--NAVIGATION-->
@@ -68,7 +68,13 @@
     <!--SEARCH-->
     <div id="results-wrapper">
       {%for farm in farms%}
-      <div>{{farm.farm_name}}</div>
+      <div class="to-farm btn btn-light" onclick="window.location.href='/products/{{farm.id}}'">
+        <img src="https://farms-stand-bucket.s3-us-west-2.amazonaws.com/farmstand/{{farm.image}}">
+        <div id="details">
+          <h2>{{farm.farm_name}}</h2>
+          <h4>{{farm.address.city}}, {{farm.address.state}}</h4>
+        </div>
+      </div>
       {%endfor%}
     </div>
   </body>

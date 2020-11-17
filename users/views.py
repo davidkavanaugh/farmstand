@@ -113,13 +113,14 @@ def update_user(request, user_id):
         return redirect(f'/users/{user_id}/edit')
     else: 
         user = User.objects.get(_id=user_id)
-        if 'password_1' in request.POST:
+        if len(request.POST['password_1']) > 0:
             pw_hash = bcrypt.hashpw(
                 request.POST['password_1'].encode(), bcrypt.gensalt()).decode()
             user.password = pw_hash
         user.first_name=request.POST["first_name"]
         user.last_name=request.POST["last_name"]
         user.farm_name=request.POST["farm_name"]
+        user.farm_description=request.POST["farm_description"]
         user.email=request.POST["email"]
         user.address.street_1=request.POST['street_1']
         user.address.street_2=request.POST['street_2']
