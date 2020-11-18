@@ -111,3 +111,9 @@ def update_product(request, product_id):
         product.save()
         messages.success(request, "Product Updated!")
         return redirect(f'/products/{product_id}')
+
+def delete_product(request, product_id):
+    product = Product.objects.get(id=product_id)
+    product.delete()
+    messages.success(request, f"{product.name} deleted!")
+    return redirect('/products/' + request.session['user_id'])

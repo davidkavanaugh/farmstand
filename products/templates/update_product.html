@@ -127,6 +127,34 @@
         />
         <input id="submit-btn" type="submit" value="Submit" />
       </form>
+      <!--trigger modal-->
+      <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete_product_modal">
+        Delete
+      </button>
+      <!-- Modal -->
+      <div class="modal fade" id="delete_product_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Remove Item</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>Are you sure you want to delete {{product.name}} from your inventory?</p>
+            </div>
+            <div class="modal-footer">
+              <button 
+              type="button" 
+              class="btn btn-danger"
+              onclick="window.location.href='/products/{{product.id}}/delete'"
+            >Delete</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <script>
       var loadProdFile = function (event) {
