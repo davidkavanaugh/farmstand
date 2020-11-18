@@ -41,10 +41,10 @@ def new_product(request):
 
 
 def create_product(request):
+    request.session['postData'] = request.POST
     context = {}
     errors = Product.objects.product_validator(request.POST, request.FILES)
     if len(errors) > 0:
-        request.session['postData'] = request.POST
         for key, value in errors.items():
             messages.error(request, value, extra_tags=key)
         return redirect('/products/new')
@@ -66,6 +66,7 @@ def create_product(request):
         farmer=User.objects.get(_id=request.session["user_id"])
     )
     messages.success(request, "Product Added!")
+    del request.session['postData']
     return redirect('/products/'+ request.session['user_id'])
 
 def cancel_new_product(request):
@@ -87,6 +88,7 @@ def edit_product(request, product_id):
     return render(request, "update_product.html", context)
 
 def update_product(request, product_id):
+    request.session['postData'] = request.POST
     errors = Product.objects.product_validator(request.POST, request.FILES)
     if len(errors) > 0:
         for key, value in errors.items():
@@ -110,6 +112,7 @@ def update_product(request, product_id):
         product.quantity=request.POST["product_quantity"]
         product.save()
         messages.success(request, "Product Updated!")
+        del request.session['postData']
         return redirect(f'/products/{product_id}')
 
 def delete_product(request, product_id):
