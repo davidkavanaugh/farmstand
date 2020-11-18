@@ -42,7 +42,7 @@ input {
 
 #submit-btn {
   margin-top: 10px;
-  margin-bottom: 50px;
+  margin-bottom: 10px;
   width: 50%;
 }
 
@@ -51,4 +51,9 @@ input {
   border: 1px solid black;
   border-radius: 3px;
   margin-bottom: 10px;
+}
+
+#delete_product_btn {
+  width: 50%;
+  margin-bottom: 50px;
 }

@@ -53,6 +53,9 @@
       
       <form action="/products/{{product.id}}/update" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
+        {%if messages%} {%for message in messages%}
+        {{message}}
+        {%endfor%}{%endif%}
         <div class="message">
         {%if messages%} {%for message in messages%}
         {%if message.extra_tags == 'product_name'%}
@@ -119,6 +122,7 @@
           id="image"
           style="display: none"
           onchange="loadProdFile(event)"
+          value="{{product.image}}"
         />
         <img 
             id="output" 
@@ -126,11 +130,12 @@
             src="https://farms-stand-bucket.s3-us-west-2.amazonaws.com/farmstand/{{product.image}}"
         />
         <input id="submit-btn" type="submit" value="Submit" />
+        <button id="delete_product_btn" type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete_product_modal">
+          Delete
+        </button>
       </form>
       <!--trigger modal-->
-      <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete_product_modal">
-        Delete
-      </button>
+
       <!-- Modal -->
       <div class="modal fade" id="delete_product_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">

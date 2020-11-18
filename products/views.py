@@ -26,7 +26,16 @@ def get_product(request, product_id):
 
 def get_products(request, user_id):
     user = User.objects.get(_id=user_id)
-    context = {"farmer": user, "products": user.products.all()}
+    products = user.products.all()
+    # CONVERT PRICE
+    for product in products:
+        price = str(product.price)
+        if "." in price:
+            if(len(price[price.find(".")+1: len(price)])) < 2:
+                product.price = price + "0"
+        else:
+            product.price = price + ".00"
+    context = {"farmer": user, "products": products}
     if 'user_id' in request.session:
         if str(user_id) == str(request.session['user_id']):
             return render(request, "my_products.html", context)
@@ -48,18 +57,11 @@ def create_product(request):
         for key, value in errors.items():
             messages.error(request, value, extra_tags=key)
         return redirect('/products/new')
-    # CONVERT PRICE
-    price = request.POST['product_price']
-    if "." in price:
-        if(len(price[price.find(".")+1: len(price)])) < 2:
-            price = price + "0"
-    else:
-        price = float(price + ".00")
     # CREATE PRODUCT DOCUMENT
     Product.objects.create(
         name=request.POST["product_name"],
         description=request.POST["product_description"],
-        price=price,
+        price=request.POST['product_price'],
         unit=request.POST["product_unit"],
         quantity=request.POST["product_quantity"],
         image=request.FILES['image'],
@@ -89,7 +91,7 @@ def edit_product(request, product_id):
 
 def update_product(request, product_id):
     request.session['postData'] = request.POST
-    errors = Product.objects.product_validator(request.POST, request.FILES)
+    errors = Product.objects.product_update_validator(request.POST, request.FILES)
     if len(errors) > 0:
         for key, value in errors.items():
             messages.error(request, value, extra_tags=key)
@@ -102,9 +104,9 @@ def update_product(request, product_id):
                 price = price + "0"
         else:
             price = float(price + ".00")
+        product = Product.objects.get(id=product_id)
         if 'image' in request.FILES:
             product.image = request.FILES['image']
-        product = Product.objects.get(id=product_id)
         product.name=request.POST["product_name"]
         product.description=request.POST["product_description"]
         product.price=price

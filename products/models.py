@@ -13,7 +13,7 @@ class ProductManager(models.Manager):
         NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
         DESCRIPTION_REGEX = re.compile(r'^[0-9a-zA-Z\!\-\$\/\\,\'\s]+$')
         UNIT_REGEX = re.compile(r'^[a-zA-Z]+$')
-        PRICE_REGEX = re.compile(r'(0\.((0[1-9]{1})|([1-9]{1}([0-9]{1})?)))|(([1-9]+[0-9]*)(\.([0-9]{1,2}))?)')
+        PRICE_REGEX = re.compile(r'(0\.((0[1-9]{1})|([1-9]{1}([0-9]{1})?)))|(([1-9]+[0-9]*)(\.([0-9]{2}))?)')
         QUANTITY_REGEX = re.compile(r'^[0-9]+$')
         if not NAME_REGEX.match(postData['product_name']):
             errors['product_name'] = "please enter a valid name"
@@ -34,6 +34,31 @@ class ProductManager(models.Manager):
                 print('Invalid image')
         else:
             errors['product_image'] = "Please include an image"
+        return errors
+    def product_update_validator(self, postData, files):
+        errors = {}
+        NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
+        DESCRIPTION_REGEX = re.compile(r'^[0-9a-zA-Z\!\-\$\/\\,\'\s]+$')
+        UNIT_REGEX = re.compile(r'^[a-zA-Z]+$')
+        PRICE_REGEX = re.compile(r'(0\.((0[1-9]{1})|([1-9]{1}([0-9]{1})?)))|(([1-9]+[0-9]*)(\.([0-9]{2}))?)')
+        QUANTITY_REGEX = re.compile(r'^[0-9]+$')
+        if not NAME_REGEX.match(postData['product_name']):
+            errors['product_name'] = "please enter a valid name"
+        if not DESCRIPTION_REGEX.match(postData['product_description']):
+            errors['product_description'] = "Please enter a valid description"
+        if not UNIT_REGEX.match(postData['product_unit']):
+            errors['product_unit'] = "Please enter a unit of measurement"
+        if not PRICE_REGEX.match(postData['product_price']):
+            errors['product_price'] = "Please enter a valid price"
+        if not QUANTITY_REGEX.match(postData['product_quantity']):
+            errors['product_quantity'] = "Please enter a quanitty"
+        if 'image' in files:
+            try:
+                Image.open(files['image']).verify
+                print('Valid image')
+            except Exception:
+                errors['image'] = "Image must be jpeg or png"
+                print('Invalid image')
         return errors
 
 class Product(models.Model):

@@ -36,14 +36,14 @@ def get_farms(request):
     #     os.getenv("ZIP_DOMAIN"), headers=headers, params=params)
     # res = json.loads(response.text)["results"]
     res = [
-        {"location": '98296'}
+        {"location": '04769'}
     ]
     if len(res) == 0:
         messages.error(request, "No Farms Found")
         return redirect("/")
     for location in res:
         # addresses = Address.objects.filter(zip_code=location["code"])
-        addresses = Address.objects.filter(zip_code=98296)
+        addresses = Address.objects.filter(zip_code='04769')
         for address in addresses:
             print(address)
             farmer = User.objects.get(_id=address.user._id)

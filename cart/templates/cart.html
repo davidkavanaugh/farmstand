@@ -54,12 +54,12 @@
             <li>
               <a href="/products/{{request.session.user_id}}">Inventory</a>
             </li>
-            <li><a href="/cart">Shopping Cart</a></li>
+            <li class="active"><a href="/cart">Shopping Cart</a></li>
             <li><a href="/users/logout">Logout</a></li>
             {%else%}
             <li><a href="/users/sign-in">Sign In</a></li>
             <li><a href="/users/new">Register</a></li>
-            <li><a href="/cart">Shopping Cart</a></li>
+            <li class="active"><a href="/cart">Shopping Cart</a></li>
             {%endif%}
           </ul>
         </div>
@@ -68,7 +68,41 @@
       <!-- /.container-fluid -->
     </nav>
     <div class="container">
-      test
+      <h2>Shopping Cart:</h2>
+      {%for item in cart%}
+      <div class="item">
+          <div class="img_and_details">
+            <img class="cart_img" src="https://farms-stand-bucket.s3-us-west-2.amazonaws.com/farmstand/{{item.product.image}}">
+            <div class="name_and_price">
+              <div class="item_name">{{item.product.name}}</div>
+              <div class="item_price">${{item.product.price}} / {{item.product.unit}}</div>
+            </div>
+          </div>
+          <div class="quantity_and_total">
+            <div class="item_total">${{item.total}}</div>
+            <form id="update-cart" action="/cart/update/{{item.product.id}}" method="POST">
+              {%csrf_token%}
+              <select id="select-quantity" name="quantity" onchange="this.form.submit()">
+                {% for i in item.product.quantity %}
+                {%if i == item.quantity_ordered%}
+                <option class="quantity" value="{{item.quantity_ordered}}" selected>{{i}}</option>
+                {%else%}
+                <option class="quantity" value="{{i}}">{{i}} {{product.unit}}</option>
+                {%endif%}
+                {% endfor %}
+              </select>
+            </form>
+          </div>
+      </div>
+      {%endfor%}
+      {% if checkout_total == 00. or checkout_total == "0.00" %}
+      <div id="empty-cart">your cart is empty</div>
+      {%else%}
+      <div id="checkout">
+        <div id="cart_total">${{checkout_total}}</div>
+        <button onclick="window.location.href='/cart/checkout'" class="btn btn-warning">Checkout</button>
+      </div>
+      {%endif%}
     </div>
   </body>
 </html>
