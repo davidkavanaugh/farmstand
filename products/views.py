@@ -6,6 +6,13 @@ from django.contrib import messages
 
 def get_product(request, product_id):
     product = Product.objects.get(id=product_id)
+    price = str(product.price)
+    if "." in price:
+        if(len(price[price.find(".")+1: len(price)])) < 2:
+            price = price + "0"
+    else:
+        price = float(price + ".00")
+    product.price = price
     farmer = product.farmer
     farmer.id = farmer._id
     quantity = []
@@ -66,8 +73,16 @@ def cancel_new_product(request):
 
 
 def edit_product(request, product_id):
+    product = Product.objects.get(id=product_id)
+    price = str(product.price)
+    if "." in price:
+        if(len(price[price.find(".")+1: len(price)])) < 2:
+            price = price + "0"
+    else:
+        price = float(price + ".00")
+    product.price = price
     context = {
-        "product": Product.objects.get(id=product_id)
+        "product": product
     }
     return render(request, "update_product.html", context)
 

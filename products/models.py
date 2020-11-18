@@ -32,6 +32,8 @@ class ProductManager(models.Manager):
             except Exception:
                 errors['image'] = "Image must be jpeg or png"
                 print('Invalid image')
+        else:
+            errors['product_image'] = "Please include an image"
         return errors
 
 class Product(models.Model):

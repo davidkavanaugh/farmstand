@@ -91,6 +91,8 @@
           name="product_price"
           placeholder="Price: $1.99"
           type="text"
+          pattern="(0\.((0[1-9]{1})|([1-9]{1}([0-9]{1})?)))|(([1-9]+[0-9]*)(\.([0-9]{1,2}))?)"
+          title="Please enter a valid dollar amount"
           {%if 'postData' in request.session%}
           value="{{request.session.postData.product_price}}"
           {%endif%}
@@ -125,7 +127,7 @@
         />
         <div class="message">
         {%if messages%} {%for message in messages%}
-        {%if message.extra_tags == 'image'%}
+        {%if message.extra_tags == 'product_image'%}
           <div class="{{message.tags}}">{{message}}</div>
           {%endif%}{%endfor%} {%endif%}
         </div>
