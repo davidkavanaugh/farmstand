@@ -11,14 +11,14 @@ class ProductManager(models.Manager):
     def product_validator(self, postData, files):
         errors = {}
         NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
-        DESCRIPTION_REGEX = re.compile(r'^[0-9a-zA-Z\'\s]+$')
+        DESCRIPTION_REGEX = re.compile(r'^[0-9a-zA-Z\!\-\$\/\\,\'\s]+$')
         UNIT_REGEX = re.compile(r'^[a-zA-Z]+$')
         PRICE_REGEX = re.compile(r'(0\.((0[1-9]{1})|([1-9]{1}([0-9]{1})?)))|(([1-9]+[0-9]*)(\.([0-9]{1,2}))?)')
         QUANTITY_REGEX = re.compile(r'^[0-9]+$')
         if not NAME_REGEX.match(postData['product_name']):
             errors['product_name'] = "please enter a valid name"
         if not DESCRIPTION_REGEX.match(postData['product_description']):
-            errors['product_description'] = "Please enter a description"
+            errors['product_description'] = "Please enter a valid description"
         if not UNIT_REGEX.match(postData['product_unit']):
             errors['product_unit'] = "Please enter a unit of measurement"
         if not PRICE_REGEX.match(postData['product_price']):

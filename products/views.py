@@ -26,12 +26,18 @@ def get_products(request, user_id):
     return render(request, "all_products.html", context)
 
 def new_product(request):
+    if 'postData' in request.session:
+        context = {
+            "product": request.session['postData']
+        }
     return render(request, "create_product.html")
 
 
 def create_product(request):
+    context = {}
     errors = Product.objects.product_validator(request.POST, request.FILES)
     if len(errors) > 0:
+        request.session['postData'] = request.POST
         for key, value in errors.items():
             messages.error(request, value, extra_tags=key)
         return redirect('/products/new')
@@ -42,7 +48,6 @@ def create_product(request):
             price = price + "0"
     else:
         price = float(price + ".00")
-
     # CREATE PRODUCT DOCUMENT
     Product.objects.create(
         name=request.POST["product_name"],
