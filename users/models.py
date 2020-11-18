@@ -3,23 +3,23 @@ from django_s3_storage.storage import S3Storage
 import re
 from django.conf import settings
 from PIL import Image
-# from cart.models import Cart
-
+FIRST_NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
+LAST_NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
+FARM_NAME_REGEX = re.compile(r'^[0-9a-zA-Z\'\s]+$')
+FARM_DESCRIPTION = re.compile(r'^[0-9a-zA-Z\!\-\$\/\\,\'\s]+$')
+EMAIL_REGEX = re.compile(
+    r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
+PASSWORD_REGEX = re.compile(
+    r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&/])[A-Za-z\d$@$!%*?&]{8,}")
+STREET_REGEX = re.compile(r'^[0-9a-zA-Z.\'\s]+$')
+CITY_REGEX = re.compile(r'^[a-zA-Z.\'\s]+$')
+STATE_REGEX = re.compile(r'[A-Z]{2}')
+ZIP_REGEX = re.compile(r'^\d{5}$')   
+INSTRUCTIONS = re.compile(r'^[0-9a-zA-Z\!\-\$\/\\,\'\s]+$')
 
 class UserManager(models.Manager):
     def signup_validator(self, postData, files):
         errors = {}
-        FIRST_NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
-        LAST_NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
-        FARM_NAME_REGEX = re.compile(r'^[0-9a-zA-Z\'\s]+$')
-        EMAIL_REGEX = re.compile(
-            r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
-        PASSWORD_REGEX = re.compile(
-            r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&/])[A-Za-z\d$@$!%*?&]{8,}")
-        STREET_REGEX = re.compile(r'^[0-9a-zA-Z.\'\s]+$')
-        CITY_REGEX = re.compile(r'^[a-zA-Z.\'\s]+$')
-        STATE_REGEX = re.compile(r'[A-Z]{2}')
-        ZIP_REGEX = re.compile(r'^\d{5}$')
         if not FIRST_NAME_REGEX.match(postData['first_name']):
             errors['first_name'] = "Valid first name required"
         if not LAST_NAME_REGEX.match(postData['last_name']):
@@ -28,6 +28,8 @@ class UserManager(models.Manager):
             errors['farm_name'] = "Valid farm name required"
         if not EMAIL_REGEX.match(postData['email']):
             errors['email'] = "Valid email required"
+        if not INSTRUCTIONS.match(postData['instructions']):
+            errors['instructions'] = "Please enter order instructions"
         if not PASSWORD_REGEX.match(postData["password_1"]):
             errors['password'] = "Password too weak"
         if not STREET_REGEX.match(postData['street_1']):
@@ -54,19 +56,7 @@ class UserManager(models.Manager):
         return errors
 
     def update_validator(self, postData, files, user_id):
-        errors = {}
-        FIRST_NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
-        LAST_NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
-        FARM_NAME_REGEX = re.compile(r'^[0-9a-zA-Z\'\s]+$')
-        FARM_DESCRIPTION = re.compile(r'^[0-9a-zA-Z\!\-\$\/\\,\'\s]+$')
-        EMAIL_REGEX = re.compile(
-            r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
-        PASSWORD_REGEX = re.compile(
-            r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&/])[A-Za-z\d$@$!%*?&]{8,}")
-        STREET_REGEX = re.compile(r'^[0-9a-zA-Z.\'\s]+$')
-        CITY_REGEX = re.compile(r'^[a-zA-Z.\'\s]+$')
-        STATE_REGEX = re.compile(r'[A-Z]{2}')
-        ZIP_REGEX = re.compile(r'^\d{5}$')   
+        errors = {} 
         if not FIRST_NAME_REGEX.match(postData['first_name']):
             errors['first_name'] = "Valid first name required"
         if not LAST_NAME_REGEX.match(postData['last_name']):
@@ -75,6 +65,8 @@ class UserManager(models.Manager):
             errors['farm_name'] = "Valid farm name required"
         if not EMAIL_REGEX.match(postData['email']):
             errors['email'] = "Valid email required"       
+        if not INSTRUCTIONS.match(postData['instructions']):
+            errors['instructions'] = "Please enter order instructions"
         if not STREET_REGEX.match(postData['street_1']):
             errors['street'] = "Valid address required"
         if not CITY_REGEX.match(postData['city']):
@@ -127,6 +119,7 @@ class User(models.Model):
     farm_name = models.CharField(max_length=255, default="")
     farm_description = models.TextField(default="")
     email = models.CharField(max_length=255, default='')
+    instructions = models.TextField(default="")
     password = models.CharField(max_length=255, default="")
     address = models.OneToOneField(
         Address,

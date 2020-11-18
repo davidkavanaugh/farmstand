@@ -167,6 +167,23 @@
         />
         {%if request.session.signUpData%}
         <div class="form-error">
+          {%for message in messages%} {%if 'instructions' in message.extra_tags%}
+          <span class="{{message.tags}}">{{message}}</span>
+          {%endif%} {% endfor %}
+        </div>
+        <input
+          type="text"
+          name="instructions"
+          id="instructions"
+          placeholder="Order Msg, Ex:'Front Porch'"
+          value="{{request.session.signUpData.instructions}}"
+        />
+        {%else%}
+        <div class="form-error"></div>
+        <input type="text" name="instructions" id="instructions" placeholder="Order Instructions" />
+        {%endif%}
+        {%if request.session.signUpData%}
+        <div class="form-error">
           {%for message in messages%} {%if 'street' in message.extra_tags%}
           <span class="{{message.tags}}">{{message}}</span>
           {%endif%} {% endfor %}

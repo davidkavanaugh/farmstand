@@ -47,6 +47,7 @@ def register_user(request):
             last_name=request.POST["last_name"],
             farm_name=request.POST["farm_name"],
             email=request.POST["email"],
+            instructions=request.POST['instructions'],
             password=pw_hash,
             address=user_address,
         )
@@ -122,6 +123,7 @@ def update_user(request, user_id):
         user.farm_name=request.POST["farm_name"]
         user.farm_description=request.POST["farm_description"]
         user.email=request.POST["email"]
+        user.instructions=request.POST['instructions']
         user.address.street_1=request.POST['street_1']
         user.address.street_2=request.POST['street_2']
         user.address.city=request.POST['city']
