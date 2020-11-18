@@ -76,6 +76,7 @@
       </div>
       <form action="get-farms" method="POST">
         {% csrf_token %}
+  
         <input
           type="text"
           placeholder="Search by Zip Code"
@@ -84,9 +85,15 @@
           id="zipCode"
           title="Five digit zip code"
           required
+          {%if 'zipCode' in request.session%}
+          value="{{request.session.zipCode}}"
+          {%endif%}
         />
         <select name="search-radius" required>
           <option value="">Distance in Miles</option>
+          {%if 'zipCode' in request.session%}
+          <option selected value="{{request.session.search_radius}}">{{request.session.search_radius}} mile radius</option>
+          {%endif%}
           <option value="1">1</option>
           <option value="5">5</option>
           <option value="10">10</option>

@@ -8,10 +8,17 @@ import os
 
 
 def index(request):
+    if 'zipCode' in request.session:
+        context = {
+            "zipCode": request.session['zipCode'],
+            "search_radius": request.session['search_radius']
+        }
     return render(request, "index.html")
 
 
 def get_farms(request):
+    request.session['zipCode'] = request.POST['zipCode']
+    request.session['search_radius'] = request.POST['search-radius']
     context = {
         "zipCode": request.POST['zipCode'],
         "farms": []
