@@ -13,11 +13,6 @@ class Cart(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 class CartItem(models.Model):
-    cart = models.ForeignKey(
-        Cart,
-        related_name="items",
-        on_delete=models.CASCADE
-    )
     product = models.ForeignKey(
         Product,
         related_name="cart_items",
