@@ -1,0 +1,40 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+  }
+  
+  .container {
+    padding-top: 60px;
+    display:flex;
+    align-items: center;
+  }
+  
+  #cancel-btn {
+    margin-right: 7px;
+  }
+
+  form {
+    width: 250px;
+  }
+
+  input, button {
+    padding: 5px;
+    margin: 5px 0px;
+  }
+
+.container, form {
+  display: flex;
+  flex-direction: column;
+}
+
+#card-element {
+  margin: 5px 0px;
+  padding: 8px 5px;
+  border: 1px solid #767676;
+}

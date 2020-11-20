@@ -15,7 +15,7 @@ STREET_REGEX = re.compile(r'^[0-9a-zA-Z.\'\s]+$')
 CITY_REGEX = re.compile(r'^[a-zA-Z.\'\s]+$')
 STATE_REGEX = re.compile(r'[A-Z]{2}')
 ZIP_REGEX = re.compile(r'^\d{5}$')   
-INSTRUCTIONS = re.compile(r'^[0-9a-zA-Z\!\-\$\/\\,\'\s]+$')
+INSTRUCTIONS = re.compile(r'^[0-9a-zA-Z\!\-\$\/\\,\'\:\@\s]+$')
 
 class UserManager(models.Manager):
     def signup_validator(self, postData, files):
@@ -128,6 +128,7 @@ class User(models.Model):
         related_name="user"
     )
     image = models.ImageField(storage=aws_storage, default="")
+    stripeId = models.CharField(max_length=255, default="")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = UserManager()

@@ -2,6 +2,13 @@ from django.shortcuts import render, redirect
 from users.models import User
 from products.models import Product
 from cart.models import Cart, CartItem
+import uuid
+import stripe
+import os
+stripe.api_key = os.getenv("STRIPE_API_KEY")
+def GetUserByProductId(productId):
+    user = Product.objects.get(id=productId).farmer
+    return user
 
 
 def index(request):
@@ -60,6 +67,8 @@ def index(request):
         if 'cart' in request.session:
             checkout_total = 0
             for key in request.session['cart']:
+                farmer = GetUserByProductId(key)
+                
                 product = Product.objects.filter(id=key)
                 if len(product) > 0:
                     product = product[0]
@@ -90,7 +99,18 @@ def index(request):
                                 "price": product.price,
                                 "unit": product.unit,
                                 "image": product.image,
-                                "quantity": quantArr
+                                "quantity": quantArr,
+                                "farmer": {
+                                    "name": product.farmer.farm_name,
+                                    "address": {
+                                        "street_1": product.farmer.address.street_1,
+                                        "street_2": product.farmer.address.street_2,
+                                        "city": product.farmer.address.city,
+                                        "state": product.farmer.address.state,
+                                        "zip_code": product.farmer.address.zip_code
+                                    },
+                                    "instructions": product.farmer.instructions
+                                }
                             },
                             "quantity_ordered": quantity_ordered,
                             "total": total,
@@ -191,5 +211,186 @@ def delete_item(request, product_id):
     return redirect('/cart')
 
 def checkout(request):
-    print(request.session['cart'])
-    return redirect('/cart')
+    context = {}
+    order_object = {}
+    order_total = 0
+    if 'user_id' in request.session:
+        cart = Cart.objects.get(user=User.objects.get(_id=request.session['user_id']))
+        for item in cart.items.all():
+            if not item.product.farmer._id in order_object:
+                order_object[item.product.farmer._id] = {
+                    "seller_name": item.product.farmer.farm_name,
+                    "seller_email": item.product.farmer.email,
+                    "seller_address": {
+                        "street_1": item.product.farmer.address.street_1,
+                        "street_2": item.product.farmer.address.street_2,
+                        "city": item.product.farmer.address.city,
+                        "state": item.product.farmer.address.state,
+                        "zip_code": item.product.farmer.address.zip_code,
+                    },
+                    "seller_instructions": item.product.farmer.instructions,
+                    "items_ordered": []
+                }
+            order_object[item.product.farmer._id]['items_ordered'].append({
+                "product_id": item.product.id,
+                "product_name": item.product.name,
+                "product_price": item.product.price,
+                "product_unit": item.product.unit,
+                "quantity_ordered": item.quantity_ordered,
+                "item_total": item.quantity_ordered * item.product.price
+            })
+            order_total += item.quantity_ordered * item.product.price
+    else:
+        cart = request.session['cart']
+        for item in cart:
+            product = Product.objects.filter(id=item)
+            if len(product) > 0:
+                product = product[0]
+            else: 
+                continue
+            if not product.farmer._id in order_object:
+                order_object[product.farmer._id] = {
+                    "seller_name": product.farmer.farm_name,
+                    "seller_email": product.farmer.email,
+                    "seller_address": {
+                        "street_1": product.farmer.address.street_1,
+                        "street_2": product.farmer.address.street_2,
+                        "city": product.farmer.address.city,
+                        "state": product.farmer.address.state,
+                        "zip_code": product.farmer.address.zip_code,
+                    },
+                    "seller_instructions": product.farmer.instructions,
+                    "items_ordered": []
+                }
+            order_object[product.farmer._id]['items_ordered'].append({
+                "product_id": product.id,
+                "product_name": product.name,
+                "product_price": product.price,
+                "product_unit": product.unit,
+                "quantity_ordered": cart[item],
+                "item_total": float(cart[item]) * product.price
+            })
+            order_total += float(cart[item]) * product.price
+    order_total = int(order_total * 100)
+    print('order total:', order_total)
+    transfer_group = uuid.uuid4().hex
+    # Create a PaymentIntent:
+    payment_intent = stripe.PaymentIntent.create(
+        amount=order_total,
+        currency='usd',
+        payment_method_types=['card'],
+        transfer_group=transfer_group,
+    )
+    for key in order_object:
+        farmer = User.objects.get(_id=key)
+        transfer_total = 0
+        items_ordered = order_object[key]['items_ordered']
+        for item in items_ordered:
+            transfer_total += item['item_total']
+        transfer_total = int(transfer_total * 90)
+        print('transfer total:', transfer_total)
+        transfer = stripe.Transfer.create(
+            amount=transfer_total,
+            currency="usd",
+            destination=farmer.stripeId,
+            transfer_group=transfer_group,
+        )
+
+    context['payment_intent'] = payment_intent
+    context['stripe_key'] = os.getenv("STRIPE_PUBLISH_KEY")
+    request.session['order'] = True
+    return render(request, "stripe_payment.html", context)
+
+def checkout_success(request):
+    if not 'order' in request.session:
+        return redirect('/cart')
+    context = {}
+    if 'user_id' in request.session:
+        user = User.objects.get(_id=request.session['user_id'])
+        context['user'] = user
+        cart = Cart.objects.filter(user=user)
+        if len(cart) > 0:
+            cart = cart[0].items.all()
+            cart.checkout_total = float(0)
+            for item in cart:
+                item.total = item.quantity_ordered * item.product.price
+                item_price = str(item.product.price)
+                if "." in item_price:
+                    if(len(item_price[item_price.find(".")+1: len(item_price)])) < 2:
+                        item_price = item_price + "0"
+                else:
+                    item_price = item_price + ".00"
+                item.product.price = item_price
+                total_price = str(item.total)
+                if "." in total_price:
+                    if(len(total_price[total_price.find(".")+1: len(total_price)])) < 2:
+                        total_price = total_price + "0"
+                else:
+                    total_price = total_price + ".00"
+                item.total = total_price
+                if "." in total_price:
+                    if(len(total_price[total_price.find(".")+1: len(total_price)])) < 2:
+                        total_price = total_price + "0"
+                else:
+                    total_price = total_price + ".00"
+                cart.checkout_total = float(cart.checkout_total) + float(item.total)
+            cart_total = str(cart.checkout_total)
+            if "." in cart_total:
+                if(len(cart_total[cart_total.find(".")+1: len(cart_total)])) < 2:
+                    cart_total = cart_total + "0"
+            else:
+                cart_total = cart_total + ".00"
+            context['checkout_total'] = cart_total
+            context['cart'] = cart
+            user_cart = cart
+            user_cart.delete()
+            
+    else: 
+        cart = []
+        request.session['order'] = {}
+        if 'cart' in request.session:
+            checkout_total = 0
+            # key is product id
+            for key in request.session['cart']:
+                product = Product.objects.filter(id=key)
+                if len(product) > 0:
+                    product = product[0]
+                    price = str(product.price)
+                    if "." in price:
+                        if(len(price[price.find(".")+1: len(price)])) < 2:
+                            product.price = price + "0"
+                    else:
+                        product.price = price + ".00"
+                    quantity_ordered = int(request.session['cart'][key])
+                    total = str(float(quantity_ordered) * float(product.price))
+                    if "." in total:
+                        if(len(total[total.find(".")+1: len(total)])) < 2:
+                            total = total + "0"
+                    else:
+                        total = total + ".00"
+                    checkout_total = float(checkout_total) + float(total)
+                    cart.append({
+                        "product": {
+                            "id": product.id,
+                            "name": product.name,
+                            "price": product.price,
+                            "unit": product.unit,
+                            "image": product.image,
+                            "quantity": quantity_ordered, 
+                            
+                        },
+                        "quantity_ordered": quantity_ordered,
+                        "total": total,
+                    })
+            cart_total = str(checkout_total)
+            if "." in cart_total:
+                if(len(cart_total[cart_total.find(".")+1: len(cart_total)])) < 2:
+                    cart_total = cart_total + "0"
+            else:
+                cart_total = cart_total + ".00"
+            context['checkout_total'] = cart_total
+        non_user_cart = cart
+        context['cart'] = cart
+    del request.session['order']
+    del request.session['cart']
+    return render(request, "checkout_success.html", context)  

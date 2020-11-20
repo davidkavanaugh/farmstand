@@ -7,14 +7,14 @@ from PIL import Image
 
 aws_storage = S3Storage(aws_s3_bucket_name=settings.AWS_S3_BUCKET_NAME)
 
+NAME_REGEX = re.compile(r'^[0-9a-zA-Z\!\-\$\/\\,\'\s]+$')
+DESCRIPTION_REGEX = re.compile(r'^[0-9a-zA-Z\!\-\$\/\\,\'\s]+$')
+UNIT_REGEX = re.compile(r'^[a-zA-Z]+$')
+PRICE_REGEX = re.compile(r'(0\.((0[1-9]{1})|([1-9]{1}([0-9]{1})?)))|(([1-9]+[0-9]*)(\.([0-9]{2}))?)')
+QUANTITY_REGEX = re.compile(r'^[0-9]+$')
 class ProductManager(models.Manager):
     def product_validator(self, postData, files):
         errors = {}
-        NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
-        DESCRIPTION_REGEX = re.compile(r'^[0-9a-zA-Z\!\-\$\/\\,\'\s]+$')
-        UNIT_REGEX = re.compile(r'^[a-zA-Z]+$')
-        PRICE_REGEX = re.compile(r'(0\.((0[1-9]{1})|([1-9]{1}([0-9]{1})?)))|(([1-9]+[0-9]*)(\.([0-9]{2}))?)')
-        QUANTITY_REGEX = re.compile(r'^[0-9]+$')
         if not NAME_REGEX.match(postData['product_name']):
             errors['product_name'] = "please enter a valid name"
         if not DESCRIPTION_REGEX.match(postData['product_description']):
@@ -37,11 +37,6 @@ class ProductManager(models.Manager):
         return errors
     def product_update_validator(self, postData, files):
         errors = {}
-        NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
-        DESCRIPTION_REGEX = re.compile(r'^[0-9a-zA-Z\!\-\$\/\\,\'\s]+$')
-        UNIT_REGEX = re.compile(r'^[a-zA-Z]+$')
-        PRICE_REGEX = re.compile(r'(0\.((0[1-9]{1})|([1-9]{1}([0-9]{1})?)))|(([1-9]+[0-9]*)(\.([0-9]{2}))?)')
-        QUANTITY_REGEX = re.compile(r'^[0-9]+$')
         if not NAME_REGEX.match(postData['product_name']):
             errors['product_name'] = "please enter a valid name"
         if not DESCRIPTION_REGEX.match(postData['product_description']):

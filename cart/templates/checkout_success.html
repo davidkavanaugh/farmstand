@@ -22,8 +22,8 @@
       crossorigin="anonymous"
     ></script>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'list-products.css' %}" />
-    <title>FarmStand: My Inventory</title>
+    <link rel="stylesheet" href="{% static 'cart.css' %}" />
+    <title>FarmStand: Receipt</title>
   </head>
   <body>
     <!--NAVIGATION-->
@@ -49,64 +49,50 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav navbar-right">
+            {%if request.session.user_id%}
             <li><a href="/users/{{request.session.user_id}}">Account</a></li>
-            <li class="active">
+            <li>
               <a href="/products/{{request.session.user_id}}">Inventory</a>
             </li>
+            <li class="active"><a href="/cart">Shopping Cart</a></li>
             <li><a href="/users/logout">Logout</a></li>
+            {%else%}
+            <li><a href="/users/sign-in">Sign In</a></li>
+            <li><a href="/users/new">Register</a></li>
+            <li class="active"><a href="/cart">Shopping Cart</a></li>
+            {%endif%}
           </ul>
         </div>
         <!-- /.navbar-collapse -->
       </div>
       <!-- /.container-fluid -->
     </nav>
-    <div id="my-products" class="container">
-      <h1>{{farmer.farm_name}}</h1>
-      <div class="message">
-      {%if messages%}
-      {%for message in messages%}
-      {%if message.tags == 'success'%}
-      <div class="{{message.tags}}">{{message}}</div>
-      {%endif%}
-      {%endfor%}
-      {%endif%}
-      </div>
-      <secion id="my_products">
-        {%for product in products%}
-        <div class="product btn btn-light product-btn"
-          onclick="window.location.href='/products/{{product.id}}'"
-        >
-          <img src="https://farms-stand-bucket.s3-us-west-2.amazonaws.com/farmstand/{{product.image}}" alt="product image">
-          <div class="details">
-            <h3>{{product.name}}({{product.quantity}})</h3>
-            <div class="meta">
-              <div class="price">${{product.price}}</div>
-              <div class="per">/</div>
-              <div class="unit">{{product.unit}}</div>
+    <div class="container">
+      <h2>Success!<h2>
+        <h3>Please print for your records</h3>
+      {%for item in cart%}
+      <div class="item">
+          <div class="img_and_details">
+            <img class="cart_img" src="https://farms-stand-bucket.s3-us-west-2.amazonaws.com/farmstand/{{item.product.image}}">
+            <div class="name_and_price">
+              <div class="item_name">{{item.product.name}}</div>
+              <div class="item_price">${{item.product.price}} / {{item.product.unit}}</div>
             </div>
           </div>
-        </div>
-        {%endfor%}
-      </secion>
-    </div>
-    <div
-      id="add-btn"
-      class="btn-danger"
-      onclick="window.location.href='/products/new'"
-    >
-      <svg
-        width="1em"
-        height="1em"
-        viewBox="0 0 16 16"
-        class="bi bi-plus"
-        fill="currentColor"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"
-        />
-      </svg>
+          <div class="quantity_and_total">
+            <div class="item_total">${{item.total}}</div>
+            <div class="item_quantity">Qty: {{item.quantity_ordered}}</div>
+          </div>
+      </div>
+      {%endfor%}
+      {% if checkout_total == 00. or checkout_total == "0.00" %}
+      <div id="empty-cart">your cart is empty</div>
+      {%else%}
+      <div id="checkout">
+        <div id="cart_total">${{checkout_total}}</div>
+        <button onclick="window.print()" class="btn btn-warning">Print</button>
+      </div>
+      {%endif%}
     </div>
   </body>
 </html>

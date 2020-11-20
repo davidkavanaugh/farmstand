@@ -2,7 +2,9 @@ from django.shortcuts import render, redirect
 from users.models import User
 from .models import Product
 from django.contrib import messages
-
+import os
+import stripe
+stripe.api_key = os.getenv("STRIPE_API_KEY")
 
 def get_product(request, product_id):
     product = Product.objects.get(id=product_id)
@@ -42,11 +44,32 @@ def get_products(request, user_id):
     return render(request, "all_products.html", context)
 
 def new_product(request):
-    if 'postData' in request.session:
-        context = {
-            "product": request.session['postData']
-        }
-    return render(request, "create_product.html")
+    print("getting user:", request.session['user_id'])
+    user = User.objects.get(_id=request.session['user_id'])
+    print("getting stripe user:", user.stripeId)
+    stripe_user = stripe.Account.retrieve(user.stripeId)
+
+    if stripe_user.details_submitted == True and stripe_user.charges_enabled == True and stripe_user.capabilities.card_payments == "active" and stripe_user.capabilities.transfers == "active":
+        print('user stripe account ready')
+        if 'postData' in request.session:
+            context = {
+                "product": request.session['postData']
+            }
+        return render(request, "create_product.html")
+    else:
+        print('user needs to finish stripe onboarding')
+        print(
+            "STRIPE USER OBJ:",
+            "DETAILS_SUBMITTED:",
+            stripe_user.details_submitted, 
+            "CHARGES_ENABLED:",
+            stripe_user.charges_enabled, 
+            "CARD_PAYMENTS:",
+            stripe_user.capabilities.card_payments,
+            "TRANSFERS:",
+            stripe_user.capabilities.transfers
+        )
+        return redirect(f'/users/refresh/{user.stripeId}')
 
 
 def create_product(request):

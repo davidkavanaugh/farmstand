@@ -2,11 +2,14 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest
 from django.contrib import messages
 from .models import User, Address
+import os
 import json
 import requests
 import bcrypt
 import uuid
-
+import stripe
+from random import randint
+stripe.api_key = os.getenv("STRIPE_API_KEY")
 
 def index(request):
     if "user_id" not in request.session:
@@ -19,6 +22,34 @@ def index(request):
 def new_user(request):
     return render(request, "sign-up.html")
 
+def refresh_stripe(request, stripeId):
+    user = User.objects.get(stripeId=stripeId)
+    stripe_user = stripe.Account.create(
+        type='express',
+        country="US",
+        email=user.email,
+        individual={
+            "id_number": "000000000",
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "address": {
+                "line1": "address_full_match​",
+                "line2": user.address.street_2,
+                "city": user.address.city,
+                "state": user.address.state,
+                "postal_code": user.address.zip_code
+            }
+        },
+        business_type="individual",
+        default_currency="USD"
+    )
+    stripe_link = stripe.AccountLink.create(
+        account=stripe_user.id,
+        refresh_url=f"http://localhost:8000/users/refresh/{stripeId}",
+        return_url="http://localhost:8000/users/sign-in",
+        type="account_onboarding",
+    )    
+    return redirect(stripe_link.url)
 
 def register_user(request):
     errors = User.objects.signup_validator(request.POST, request.FILES)
@@ -30,6 +61,31 @@ def register_user(request):
         request.session['signUpData'] = request.POST
         return redirect('/users/new')
     else:
+        stripe_user = stripe.Account.create(
+            type='express',
+            country="US",
+            email=request.POST['email'],
+            individual={
+                "id_number": "000000000",
+                "first_name": request.POST['first_name'],
+                "last_name": request.POST['last_name'],
+                "address": {
+                    "line1": "address_full_match​",
+                    "line2": request.POST['street_2'],
+                    "city": request.POST['city'],
+                    "state": request.POST['state'],
+                    "postal_code": request.POST['zip_code']
+                }
+            },
+            business_type="individual",
+            default_currency="USD"
+        )
+        stripe_link = stripe.AccountLink.create(
+            account=stripe_user.id,
+            refresh_url=f"http://localhost:8000/users/refresh/{stripe_user.id}",
+            return_url="http://localhost:8000/users/sign-in",
+            type="account_onboarding",
+        )
         user_address = Address(
             street_1=request.POST["street_1"],
             street_2=request.POST["street_2"],
@@ -50,14 +106,17 @@ def register_user(request):
             instructions=request.POST['instructions'],
             password=pw_hash,
             address=user_address,
+            stripeId=stripe_user.id
         )
         if 'image' in request.FILES:
             new_user.image=request.FILES['image']
         new_user.save()
+        user = User.objects.get(_id=new_user._id)
         if "signUpData" in request.session:
             del request.session["signUpData"]
+        request.session['user_id'] = user._id
         messages.success(request, "Success! Please Sign in.")
-        return redirect('/users/sign-in')
+        return redirect(stripe_link.url)
 
 
 def sign_in(request):
