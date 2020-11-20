@@ -12,6 +12,8 @@ urlpatterns = [
     path("<uuid:user_id>/edit", views.edit_user),
     path("<uuid:user_id>/edit/cancel", views.cancel_edit_user),
     path("<uuid:user_id>/update", views.update_user),
+    path("orders", views.all_orders),
+    path("orders/<int:order_id>", views.get_order),
     path("cart", views.get_cart),
     path("logout", views.logout)
 ]

@@ -201,6 +201,13 @@ def update_user(request, user_id):
 def cancel_edit_user(request, user_id):
     return redirect(f'/users/{user_id}')
 
+def get_order(request, order_id):
+    context = {}
+    return render(request, "order.html", context)
+
+def all_orders(request):
+    context = {}
+    return render(request, 'orders.html', context)
 
 def get_cart(request):
     return render(request, "shopping-cart.html")

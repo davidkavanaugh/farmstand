@@ -20,7 +20,7 @@ requests==2.24.0
 s3transfer==0.3.3
 six==1.15.0
 sqlparse==0.4.1
+stripe==2.55.0
 traitlets==5.0.5
 urllib3==1.25.11
 uuid==1.30
-stripe==2.55
