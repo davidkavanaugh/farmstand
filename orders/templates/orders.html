@@ -22,8 +22,7 @@
       crossorigin="anonymous"
     ></script>
     {% load static %}
-    <script type="text/javascript" src="{% static 'search.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'search.css' %}" />
+    <link rel="stylesheet" href="{% static 'orders.css' %}" />
     <title>FarmStand: Shopping Cart</title>
   </head>
   <body>
@@ -50,24 +49,37 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav navbar-right">
-            {%if request.session.user_id%}
             <li><a href="/users/{{request.session.user_id}}">Account</a></li>
             <li>
               <a href="/products/{{request.session.user_id}}">Inventory</a>
             </li>
-            <li class="active"><a href="/cart">Shopping Cart</a></li>
+            <li class="active"><a href="/orders">Orders</a></li>
             <li><a href="/users/logout">Logout</a></li>
-            {%else%}
-            <li><a href="/users/sign-in">Sign In</a></li>
-            <li><a href="/users/new">Register</a></li>
-            <li class="active"><a href="/cart">Shopping Cart</a></li>
-            {%endif%}
           </ul>
         </div>
         <!-- /.navbar-collapse -->
       </div>
       <!-- /.container-fluid -->
     </nav>
-    <div class="container">Orders:</div>
+    <div class="container">
+      <h2>Orders:</h2>
+      {%for order in orders%}
+      {{order.id}}
+      {%for item in order.items.all%}
+      <div class="item">
+        <div class="img_and_details">
+          <img class="cart_img" src="https://farms-stand-bucket.s3-us-west-2.amazonaws.com/farmstand/{{item.product.image}}">
+          <div class="name_and_price">
+            <div class="item_name">{{item.product.name}}</div>
+            <div class="item_price">${{item.product.price}} / {{item.product.unit}}</div>
+          </div>
+        </div>
+        <div class="quantity_and_total">
+          <div class="item_total">Qty: {{item.quantity_ordered}}</div>
+        </div>
+    </div>
+    {%endfor%}
+    {%endfor%}
+    </div>
   </body>
 </html>

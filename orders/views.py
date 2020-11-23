@@ -5,6 +5,8 @@ import json
 from users.models import User
 from cart.models import CartItem
 from products.models import Product
+from django.shortcuts import render, redirect
+
 
 class OrderListView(View):
     def post(self, request):
@@ -29,8 +31,10 @@ class OrderListView(View):
             raise Exception
     def get(self, request):
         try:
-            orders = Order.objects.all()
-            return orders
+            print(request.session)
+            context = {}
+            context['orders'] = Order.objects.filter(user=request.session['user_id'])
+            return render(request, "orders.html", context)
         except Exception:
             raise Exception
 
