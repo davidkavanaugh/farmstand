@@ -56,6 +56,7 @@ class UserManager(models.Manager):
         return errors
 
     def update_validator(self, postData, files, user_id):
+        print(postData)
         errors = {} 
         if not FIRST_NAME_REGEX.match(postData['first_name']):
             errors['first_name'] = "Valid first name required"
@@ -85,10 +86,13 @@ class UserManager(models.Manager):
         if len(postData['farm_description']) > 0:
             if not FARM_DESCRIPTION.match(postData['farm_description']):
                 errors['farm_description'] = "Please enter a valid description"
-        if len(postData['password_1']) > 0:
+        if postData['password_1']:
             if not PASSWORD_REGEX.match(postData["password_1"]):
                 errors['password'] = "Password too weak"
-            if postData['password_1'] != postData['password_2']:
+            if postData['password_2']:
+                if postData['password_1'] != postData['password_2']:
+                    errors['password'] = "Passwords must match"
+            else:
                 errors['password'] = "Passwords must match"
         if 'image' in files:
             try:

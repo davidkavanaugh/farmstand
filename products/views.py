@@ -5,6 +5,8 @@ from django.contrib import messages
 import os
 import stripe
 stripe.api_key = os.getenv("STRIPE_API_KEY")
+from users.repository import RefreshStripeUser
+from users.repository import StripeReady
 
 def get_product(request, product_id):
     product = Product.objects.get(id=product_id)
@@ -49,7 +51,7 @@ def new_product(request):
     print("getting stripe user:", user.stripeId)
     stripe_user = stripe.Account.retrieve(user.stripeId)
 
-    if stripe_user.details_submitted == True and stripe_user.charges_enabled == True and stripe_user.capabilities.card_payments == "active" and stripe_user.capabilities.transfers == "active":
+    if StripeReady(stripe_user) == True:
         print('user stripe account ready')
         if 'postData' in request.session:
             context = {
@@ -58,18 +60,7 @@ def new_product(request):
         return render(request, "create_product.html")
     else:
         print('user needs to finish stripe onboarding')
-        print(
-            "STRIPE USER OBJ:",
-            "DETAILS_SUBMITTED:",
-            stripe_user.details_submitted, 
-            "CHARGES_ENABLED:",
-            stripe_user.charges_enabled, 
-            "CARD_PAYMENTS:",
-            stripe_user.capabilities.card_payments,
-            "TRANSFERS:",
-            stripe_user.capabilities.transfers
-        )
-        return redirect(f'/users/refresh/{user.stripeId}')
+        return RefreshStripeUser(user.stripeId)
 
 
 def create_product(request):

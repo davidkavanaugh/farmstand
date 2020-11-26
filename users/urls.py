@@ -1,19 +1,20 @@
 from . import views
 from django.urls import path
+from django.views.decorators.csrf import csrf_exempt
 
 urlpatterns = [
-    path("", views.index),
-    path("new", views.new_user),
-    path("create", views.register_user),
-    path("refresh/<str:stripeId>", views.refresh_stripe),
+    # CREATE
+    path("", views.UserListView.as_view()),
+    # READ, UPDATE
+    path('<uuid:user_id>', views.UserDetailView.as_view()),
+    # SHOW SIGN-UP FORM
+    path("new", views.new),
+    # SHOW EDIT FORM
+    path("<uuid:user_id>/edit", views.edit),
+    # SHOW SIGN-IN FORM
     path("sign-in", views.sign_in),
-    path("get-user", views.get_user),
-    path("<uuid:user_id>", views.me),
-    path("<uuid:user_id>/edit", views.edit_user),
-    path("<uuid:user_id>/edit/cancel", views.cancel_edit_user),
-    path("<uuid:user_id>/update", views.update_user),
-    path("orders", views.all_orders),
-    path("orders/<int:order_id>", views.get_order),
-    path("cart", views.get_cart),
-    path("logout", views.logout)
+    # SIGN-OUT
+    path("<uuid:user_id>/sign-out", views.sign_out),
+    # AUTHENTICATE
+    path("authenticate", views.authenticate)
 ]
