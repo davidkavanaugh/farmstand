@@ -3,17 +3,7 @@
   padding: 0;
 }
 
-.navbar {
-  position: fixed;
-  top: 0;
-  width: 100%;
-}
-
-#cancel-btn {
-  margin-right: 7px;
-}
-
-#edit-me {
+#sign-up-wrapper {
   padding-top: 60px;
   min-height: 50vh;
   display: flex;
@@ -31,7 +21,9 @@ form {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 275px;}
+  width: 275px;
+  margin-bottom: 50px;
+}
 
 input,
 select {
@@ -40,16 +32,13 @@ select {
 }
 
 #submit-btn {
-  width: 275px;
-  height: 30px;
-  margin-bottom: 50px;
+  width: 50%;
 }
 
 .error {
   color: red;
   font-size: 13px;
 }
-
 .form-error {
   height: 20px;
 }
@@ -58,4 +47,9 @@ select {
   cursor: pointer;
   border: 1px solid black;
   border-radius: 3px;
+}
+
+img {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }

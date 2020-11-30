@@ -1,0 +1,85 @@
+{%extends "list.html"%}
+{%block loadstatic%}
+{%load static%}
+<link rel="stylesheet" href="{% static 'css/products.list.css' %}" />
+{%endblock%}
+{%block title%}FarmStand: {{farmer.farm_name}}{%endblock%}
+{%block content%}
+{%if request.session.user_id%}
+{%block products-link%}class="active"{%endblock%}
+<div id="my-products" class="container">
+  <h1>{{farmer.farm_name}}</h1>
+  <div class="message">
+  {%if messages%}
+  {%for message in messages%}
+  {%if message.tags == 'success'%}
+  <div class="{{message.tags}}">{{message}}</div>
+  {%endif%}
+  {%endfor%}
+  {%endif%}
+  </div>
+  <secion id="my_products">
+    {%for product in products%}
+    <div class="product btn btn-light product-btn"
+      onclick="window.location.href='/products/{{product.id}}'"
+    >
+      <img src="https://farms-stand-bucket.s3-us-west-2.amazonaws.com/farmstand/{{product.image}}" alt="product image">
+      <div class="details">
+        <h3>{{product.name}}({{product.quantity}})</h3>
+        <div class="meta">
+          <div class="price">${{product.price}}</div>
+          <div class="per">/</div>
+          <div class="unit">{{product.unit}}</div>
+        </div>
+      </div>
+    </div>
+    {%endfor%}
+  </secion>
+</div>
+<div
+  id="add-btn"
+  class="btn-danger"
+  onclick="window.location.href='/products/new'"
+>
+  <svg
+    width="1em"
+    height="1em"
+    viewBox="0 0 16 16"
+    class="bi bi-plus"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      fill-rule="evenodd"
+      d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"
+    />
+  </svg>
+</div>
+{%else%}
+<img id="farmer-avatar" src="https://farms-stand-bucket.s3-us-west-2.amazonaws.com/farmstand/{{farmer.image}}" alt="product image">
+<div id="list_products" class="container">
+  <h1>{{farmer.farm_name}}</h1>
+  <p>{{farmer.farm_description}}</p>
+  <secion">
+    {%for product in products%}
+    {%if product.quantity > 0%}
+    <div 
+      class="product btn btn-light"
+      onclick="window.location.href='/products/{{product.id}}'"
+    >
+      <img src="https://farms-stand-bucket.s3-us-west-2.amazonaws.com/farmstand/{{product.image}}" alt="product image">
+      <div class="details">
+        <h3>{{product.name}}</h3>
+        <div class="meta">
+          <div class="price">${{product.price}}</div>
+          <div class="per">/</div>
+          <div class="unit">{{product.unit}}</div>
+        </div>
+      </div>
+    </div>
+    {%endif%}
+    {%endfor%}
+  </secion>
+</div>
+{%endif%}
+{%endblock%}

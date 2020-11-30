@@ -3,14 +3,7 @@
   padding: 0;
 }
 
-.navbar {
-  position: fixed;
-  top: 0;
-  width: 100%;
-}
-
-#sign-up-wrapper {
-  padding-top: 60px;
+#edit-me {
   min-height: 50vh;
   display: flex;
   flex-direction: column;
@@ -27,9 +20,7 @@ form {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 275px;
-  margin-bottom: 50px;
-}
+  width: 275px;}
 
 input,
 select {
@@ -38,13 +29,16 @@ select {
 }
 
 #submit-btn {
-  width: 50%;
+  width: 275px;
+  height: 30px;
+  margin-bottom: 50px;
 }
 
 .error {
   color: red;
   font-size: 13px;
 }
+
 .form-error {
   height: 20px;
 }
@@ -53,9 +47,4 @@ select {
   cursor: pointer;
   border: 1px solid black;
   border-radius: 3px;
-}
-
-img {
-  margin-top: 10px;
-  margin-bottom: 10px;
 }

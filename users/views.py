@@ -80,7 +80,7 @@ class UserListView(View):
 class UserDetailView(View):
     def dispatch(self, *args, **kwargs):
         method = self.request.POST.get('_method', '').lower()
-        if method == 'put':
+        if method == 'patch':
             return self.put(*args, **kwargs)
         return super(UserDetailView, self).dispatch(*args, **kwargs)
 
@@ -92,9 +92,9 @@ class UserDetailView(View):
             user = User.objects.get(_id=user_id)
             user.id = user._id
             context['user'] = user
-            return render(request, "me.html", context)
+            return render(request, "users.self.html", context)
 
-    def put(self, request, user_id):
+    def patch(self, request, user_id):
         validation_errors = UsersRepository.ValidatePatchRequest(request, request.session['user_id'])
         if validation_errors:
             print('errors')
@@ -126,7 +126,7 @@ class UserDetailView(View):
             return redirect(f"/users/{user_id}")
 
 def new(request):
-    return render(request, "sign-up.html")
+    return render(request, "users.new.html")
     
 def edit(request, user_id):
     if "user_id" not in request.session:
@@ -136,16 +136,16 @@ def edit(request, user_id):
         user = User.objects.get(_id=user_id)
         user.id = user._id
         context['user'] = user
-        return render(request, "edit.html", context)
+        return render(request, "users.edit.html", context)
 
 def sign_in(request):
     if "user_id" not in request.session:
-        return render(request, 'sign-in.html')
+        return render(request, 'users.sign-in.html')
     else:
         user_id = request.session["user_id"]
         return redirect("/users/"+user_id)
 
-def sign_out(request):
+def sign_out(request, user_id):
     if "user_id" in request.session:
         del request.session["user_id"]
     return redirect('/users/sign-in')

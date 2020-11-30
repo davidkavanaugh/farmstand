@@ -1,58 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-      crossorigin="anonymous"
-    />
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
-      integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
-      crossorigin="anonymous"
-    />
-    <script
-      src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-      integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-      crossorigin="anonymous"
-    ></script>
-    {%load static%}
-    <link rel="stylesheet" href="{% static 'add-product.css'%}" />
-    <title>FarmStand: Update Product</title>
-  </head>
-  <body>
-    <!--NAVIGATION-->
-    <nav class="navbar navbar-default">
-      <div
-        style="
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          justify-content: space-between;
-        "
-      >
-        <a class="navbar-brand" href="#">FarmStand</a>
-        <button
-          id="cancel-btn"
-          type="button"
-          class="btn btn-light"
-          onclick="window.location.href='/products/{{product.id}}'"
-        >
-          Cancel
-        </button>
-      </div>
-      <!-- /.container-fluid -->
-    </nav>
+{%extends "edit.html"%}
+{%block loadstatic%}
+{%load static%}
+<link rel="stylesheet" href="{% static 'css/products.new.css' %}" />
+{%endblock%}
+{%block title%}
+FarmStand: Edit My Product
+{%endblock%}
+{%block navbar-btn%}
+  <button
+    id="cancel-btn"
+    type="button"
+    class="btn btn-light"
+    onclick="window.location.href='/products/{{product.id}}'"
+  >
+  Cancel
+  </button>
+{%endblock%}
+{%block links%}
+{%endblock%}
+{%block content%}
     <div class="container">
       <h2 class="text-center">Edit {{product.name}}</h2>
       
-      <form action="/products/{{product.id}}/update" method="POST" enctype="multipart/form-data">
+      <form action="/products/{{product.id}}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
+        <input type="hidden" name="_method" value="PATCH" />
         {%if messages%} {%for message in messages%}
         {{message}}
         {%endfor%}{%endif%}
@@ -150,11 +122,11 @@
               <p>Are you sure you want to delete {{product.name}} from your inventory?</p>
             </div>
             <div class="modal-footer">
-              <button 
-              type="button" 
-              class="btn btn-danger"
-              onclick="window.location.href='/products/{{product.id}}/delete'"
-            >Delete</button>
+              <form action="/products/{{product.id}}" method="POST" class="btn">
+                {%csrf_token%}
+                <input type="hidden" name="_method" value="DELETE">
+                <input type="submit" value="Delete" class="btn btn-danger">
+              </form>
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
             </div>
           </div>
@@ -167,5 +139,4 @@
         image.src = URL.createObjectURL(event.target.files[0]);
       };
     </script>
-  </body>
-</html>
+{%endblock%}

@@ -1,0 +1,27 @@
+{%extends "list.html"%}
+{%block loadstatic%}
+{%load static%}
+<link rel="stylesheet" href="{% static 'css/orders.list.css' %}" />
+{%endblock%}
+{%block content%}
+    <div class="container">
+      <h2>Orders:</h2>
+      {%for order in orders%}
+      {{order.id}}
+      {%for item in order.items.all%}
+      <div class="item">
+        <div class="img_and_details">
+          <img class="cart_img" src="https://farms-stand-bucket.s3-us-west-2.amazonaws.com/farmstand/{{item.product.image}}">
+          <div class="name_and_price">
+            <div class="item_name">{{item.product.name}}</div>
+            <div class="item_price">${{item.product.price}} / {{item.product.unit}}</div>
+          </div>
+        </div>
+        <div class="quantity_and_total">
+          <div class="item_total">Qty: {{item.quantity_ordered}}</div>
+        </div>
+    </div>
+    {%endfor%}
+    {%endfor%}
+    </div>
+{%endblock%}

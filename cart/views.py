@@ -8,6 +8,8 @@ import stripe
 import os
 import requests
 import json
+from django.views import View
+
 stripe.api_key = os.getenv("STRIPE_API_KEY")
 def GetUserByProductId(productId):
     user = Product.objects.get(id=productId).farmer
@@ -16,145 +18,152 @@ def GetUserByUserId(userId):
     user = User.objects.get(_id=userId)
     return user
 
-
-def index(request):
-    context = {}
-    cart = []
-    if 'cart' in request.session:
-        checkout_total = 0
-        for key in request.session['cart']:
-            farmer = GetUserByProductId(key)
-            product = Product.objects.filter(id=key)
-            if len(product) > 0:
-                product = product[0]
-                if product.quantity > 0:
-                    price = str(product.price)
-                    if "." in price:
-                        if(len(price[price.find(".")+1: len(price)])) < 2:
-                            product.price = price + "0"
-                    else:
-                        product.price = price + ".00"
-                    quantArr = []
-                    for i in range(0, product.quantity+1):
-                        quantArr.append(i)
-                    quantity_ordered = int(request.session['cart'][key])
-                    if quantity_ordered > product.quantity:
-                        quantity_ordered = product.quantity
-                    total = round(float(quantity_ordered) * float(product.price), 2)
-                    # if "." in total:
-                    #     if(len(total[total.find(".")+1: len(total)])) < 2:
-                    #         total = round(total + "0", 2)
-                    # else:
-                    #     total = round(total + ".00", 2)
-                    print(total)
-                    checkout_total = round(float(checkout_total) + float(total), 2)
-                    print(checkout_total)
-                    cart.append({
-                        "product": {
-                            "id": product.id,
-                            "name": product.name,
-                            "price": product.price,
-                            "unit": product.unit,
-                            "image": product.image,
-                            "quantity": quantArr,
-                            "farmer": {
-                                "name": product.farmer.farm_name,
-                                "address": {
-                                    "street_1": product.farmer.address.street_1,
-                                    "street_2": product.farmer.address.street_2,
-                                    "city": product.farmer.address.city,
-                                    "state": product.farmer.address.state,
-                                    "zip_code": product.farmer.address.zip_code
-                                },
-                                "instructions": product.farmer.instructions
-                            }
-                        },
-                        "quantity_ordered": quantity_ordered,
-                        "total": total,
-                    })
-        cart_total = str(checkout_total)
-        if "." in cart_total:
-            if(len(cart_total[cart_total.find(".")+1: len(cart_total)])) < 2:
-                cart_total = cart_total + "0"
-        else:
-            cart_total = cart_total + ".00"
-        context['checkout_total'] = cart_total
-    non_user_cart = cart
-    context['cart'] = cart
-    return render(request, "cart.html", context)
-
-def add_to_cart(request, product_id):
-    product = Product.objects.get(id=product_id)
-    cart = {}
-    if 'user_id' in request.session:
-    # LOGGED IN
-        cart = Cart.objects.filter(user=User.objects.get(_id=request.session['user_id']))
-        if len(cart) > 0:
-            cart = cart[0]
-        # logged user has cart
-            for item in cart.items.all():
-                # logged user has this item in cart
-                if item.product.id == product_id:
-                    item.quantity_ordered += int(request.POST['quantity'])
-                    item.save()
-                    return redirect('/products/'+ product.farmer._id)
-        else:
-        # logged user no cart
-            cart = Cart.objects.create(
-                user = User.objects.get(_id=request.session['user_id'])
+class CartListView(View):
+    def get(self, request):
+        context = {}
+        cart = []
+        if 'cart' in request.session:
+            checkout_total = 0
+            for productId in request.session['cart']:
+                farmer = GetUserByProductId(productId)
+                product = Product.objects.filter(id=productId)
+                if len(product) > 0:
+                    product = product[0]
+                    if product.quantity > 0:
+                        price = str(product.price)
+                        if "." in price:
+                            if(len(price[price.find(".")+1: len(price)])) < 2:
+                                product.price = price + "0"
+                        else:
+                            product.price = price + ".00"
+                        quantArr = []
+                        for i in range(0, product.quantity+1):
+                            quantArr.append(i)
+                        quantity_ordered = int(request.session['cart'][productId])
+                        if quantity_ordered > product.quantity:
+                            quantity_ordered = product.quantity
+                        total = round(float(quantity_ordered) * float(product.price), 2)
+                        # if "." in total:
+                        #     if(len(total[total.find(".")+1: len(total)])) < 2:
+                        #         total = round(total + "0", 2)
+                        # else:
+                        #     total = round(total + ".00", 2)
+                        print(total)
+                        checkout_total = round(float(checkout_total) + float(total), 2)
+                        print(checkout_total)
+                        cart.append({
+                            "product": {
+                                "id": product.id,
+                                "name": product.name,
+                                "price": product.price,
+                                "unit": product.unit,
+                                "image": product.image,
+                                "quantity": quantArr,
+                                "farmer": {
+                                    "name": product.farmer.farm_name,
+                                    "address": {
+                                        "street_1": product.farmer.address.street_1,
+                                        "street_2": product.farmer.address.street_2,
+                                        "city": product.farmer.address.city,
+                                        "state": product.farmer.address.state,
+                                        "zip_code": product.farmer.address.zip_code
+                                    },
+                                    "instructions": product.farmer.instructions
+                                }
+                            },
+                            "quantity_ordered": quantity_ordered,
+                            "total": total,
+                        })
+            cart_total = str(checkout_total)
+            if "." in cart_total:
+                if(len(cart_total[cart_total.find(".")+1: len(cart_total)])) < 2:
+                    cart_total = cart_total + "0"
+            else:
+                cart_total = cart_total + ".00"
+            context['checkout_total'] = cart_total
+        non_user_cart = cart
+        context['cart'] = cart
+        return render(request, "cart.html", context)
+        
+    def post(self, request):
+        product_id = request.POST['productId']
+        product = Product.objects.get(id=product_id)
+        cart = {}
+        if 'user_id' in request.session:
+        # LOGGED IN
+            cart = Cart.objects.filter(user=User.objects.get(_id=request.session['user_id']))
+            if len(cart) > 0:
+                cart = cart[0]
+            # logged user has cart
+                for item in cart.items.all():
+                    # logged user has this item in cart
+                    if item.product.id == product_id:
+                        item.quantity_ordered += int(request.POST['quantity'])
+                        item.save()
+                        return redirect('/products/'+ product.farmer._id)
+            else:
+            # logged user no cart
+                cart = Cart.objects.create(
+                    user = User.objects.get(_id=request.session['user_id'])
+                )
+            cart_item = CartItem.objects.create(
+                cart=cart,
+                product=product,
+                quantity_ordered=request.POST['quantity']
             )
-        cart_item = CartItem.objects.create(
-            cart=cart,
-            product=product,
-            quantity_ordered=request.POST['quantity']
-        )
-        cart.items.add(cart_item)
-    # NOT LOGGED IN, 
-    else:
-        # IF NO CART
-        if not 'cart' in request.session:
-            request.session['cart'] = {}
-        cart = request.session['cart']
-        if str(product_id) in cart:
-            quantity = request.POST['quantity']
-            print('ADDING '+quantity+' MORE ' + product.name)
-            current_sum = cart[str(product_id)]
-            new_sum = int(current_sum) + int(quantity)
-            cart[str(product_id)] = new_sum
+            cart.items.add(cart_item)
+        # NOT LOGGED IN, 
         else:
-            quantity = request.POST['quantity']
-            print('ADDING '+quantity+" "+product.name)
-            cart[str(product_id)] = quantity
-        request.session['cart'] = cart
-    return redirect('/products/'+ product.farmer._id)
+            # IF NO CART
+            if not 'cart' in request.session:
+                request.session['cart'] = {}
+            cart = request.session['cart']
+            if str(product_id) in cart:
+                quantity = request.POST['quantity']
+                print('ADDING '+quantity+' MORE ' + product.name)
+                current_sum = cart[str(product_id)]
+                new_sum = int(current_sum) + int(quantity)
+                cart[str(product_id)] = new_sum
+            else:
+                quantity = request.POST['quantity']
+                print('ADDING '+quantity+" "+product.name)
+                cart[str(product_id)] = quantity
+            request.session['cart'] = cart
+        return redirect('/users/'+product.farmer._id+'/products')
 
-def update_cart(request, product_id):
-    if int(request.POST['quantity']) == 0:
-        delete_item(request, product_id)
-    else:
+class CartDetailView(View):
+    def dispatch(self, *args, **kwargs):
+        method = self.request.POST.get('_method', '').lower()
+        if method == 'patch':
+            if int(self.request.POST['quantity']) == 0:
+                return self.delete(*args, **kwargs)
+            return self.patch(*args, **kwargs)
+        return super(CartDetailView, self).dispatch(*args, **kwargs)
+        
+    def patch(self, request, product_id):
         cart = request.session['cart']
         for key in cart:
             if key == str(product_id):
                 cart[key] = int(request.POST['quantity'])
         request.session['cart'] = cart
-    return redirect('/cart')
+        return redirect('/cart/')
 
-def delete_item(request, product_id):
-    if 'user_id' in request.session:
-        user = User.objects.get(_id=request.session['user_id'])
-        cart = Cart.objects.filter(user=user)
-        if len(cart) > 0:
-            items = cart[0].items.all()
-            for item in items:
-                if item.product.id == product_id:
-                    cart_item = CartItem.objects.get(id=item.id)
-                    cart_item.delete()
-    else:
-        cart = request.session['cart']
-        cart.pop(str(product_id))
-        request.session['cart'] = cart
-    
-    return redirect('/cart')
+    def delete(self, request, product_id):
+        if 'user_id' in request.session:
+            user = User.objects.get(_id=request.session['user_id'])
+            cart = Cart.objects.filter(user=user)
+            if len(cart) > 0:
+                items = cart[0].items.all()
+                for item in items:
+                    if item.product.id == product_id:
+                        cart_item = CartItem.objects.get(id=item.id)
+                        cart_item.delete()
+        else:
+            cart = request.session['cart']
+            cart.pop(str(product_id))
+            request.session['cart'] = cart
+        
+        return redirect('/cart/')
 
 def checkout(request):
     context = {}

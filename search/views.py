@@ -6,19 +6,7 @@ import json
 from users.models import User, Address
 import os
 
-def index(request):
-    if 'user_id' in request.session:
-        user = User.objects.get(_id=request.session['user_id'])
-        return redirect(f'/users/{user._id}')
-    if 'zipCode' in request.session:
-        context = {
-            "zipCode": request.session['zipCode'],
-            "search_radius": request.session['search_radius']
-        }
-    return render(request, "index.html")
-
-
-def get_farms(request):
+def get_farms(request, zip_code):
     request.session['zipCode'] = request.POST['zipCode']
     request.session['search_radius'] = request.POST['search-radius']
     context = {
@@ -49,3 +37,14 @@ def get_farms(request):
                 farmer.id = farmer._id
                 context["farms"].append(farmer)
     return render(request, "search-results.html", context)
+
+def index(request):
+    if 'user_id' in request.session:
+        user = User.objects.get(_id=request.session['user_id'])
+        return redirect(f'/users/{user._id}')
+    if 'zipCode' in request.session:
+        context = {
+            "zipCode": request.session['zipCode'],
+            "search_radius": request.session['search_radius']
+        }
+    return render(request, "index.html")
