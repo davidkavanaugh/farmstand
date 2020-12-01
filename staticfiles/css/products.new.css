@@ -1,0 +1,59 @@
+* {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+  }
+  
+  .container {
+    padding-top: 60px;
+  }
+  
+  #cancel-btn {
+    margin-right: 7px;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 250px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  input {
+    width: 100%;
+    padding: 3px;
+    margin-bottom: 2px;  
+  }
+  
+  .message{
+    height: 20px;
+  }
+  
+  .error {
+    color: red;
+  }
+  
+  #submit-btn {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 50%;
+  }
+  
+  #upload-btn {
+    cursor: pointer;
+    border: 1px solid black;
+    border-radius: 3px;
+    margin-bottom: 10px;
+  }
+  
+  #delete_product_btn {
+    width: 50%;
+    margin-bottom: 50px;
+  }

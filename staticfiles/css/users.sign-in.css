@@ -1,0 +1,40 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+#sign-in-wrapper {
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+input {
+  margin: 5px 5px;
+}
+
+#submit-btn {
+  margin-top: 10px;
+}
+
+#sign-in-messages {
+  height: 20px;
+  margin-top: -5px;
+}
+
+.success {
+  color: green;
+}
+
+.error {
+  color: red;
+}
