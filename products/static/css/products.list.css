@@ -53,7 +53,9 @@
 
   .product h3 {
     margin: 0px;
-    font-size: 30px;
+    font-size: 22px;
+    word-wrap: break-word;
+    white-space: normal;
   }
 
   .product .details {
@@ -73,11 +75,11 @@
   .price, .unit, .quantity {
     border: 1px dashed black;
     border-radius: 5px;
-    padding: 10px 15px;
+    padding: 5px 15px;
     font-size: 17px;
   }
   .per {
-    padding: 10px 15px;
+    padding: 5px 15px;
     font-size: 17px;
   }
   .product img {
