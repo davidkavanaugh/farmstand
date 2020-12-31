@@ -268,7 +268,7 @@ def checkout_success(request):
     for key in request.session['order']:
         if key != 'order_total':
             payload = {"userId": key, "order": json.dumps(request.session['order'][key])}
-            order_document = requests.post("http://localhost:8000/orders/", data=payload)
+            order_document = requests.post("http://54.241.134.58/orders/", data=payload)
             receipt['orders'].append(
                 Order.objects.get(id=order_document.text)
             )

@@ -32,8 +32,8 @@ def CreateStripeUser(email, first_name, last_name, street_2, city, state, zip_co
 def CreateStripeLink(stripe_userId):
     stripe_link = stripe.AccountLink.create(
         account=stripe_userId,
-        refresh_url=f"http://localhost:8000/users/refresh/{stripe_userId}",
-        return_url="http://localhost:8000/users/sign-in",
+        refresh_url=f"http://54.241.134.58/users/refresh/{stripe_userId}",
+        return_url="http://54.241.134.58/users/sign-in",
         type="account_onboarding",
     )
     return stripe_link
