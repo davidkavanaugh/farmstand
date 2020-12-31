@@ -81,7 +81,7 @@ class UserDetailView(View):
     def dispatch(self, *args, **kwargs):
         method = self.request.POST.get('_method', '').lower()
         if method == 'patch':
-            return self.put(*args, **kwargs)
+            return self.patch(*args, **kwargs)
         return super(UserDetailView, self).dispatch(*args, **kwargs)
 
     def get(self, request, user_id):
