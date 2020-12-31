@@ -114,10 +114,12 @@ USE_TZ = True
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-STATIC_URL = '/assets/'
-STATIC_ROOT = "assets"
-STATICFILES_DIRS = ( os.path.join('static'), )
-
+TEMPLATE_PATH = os.path.join(BASE_DIR, "templates")
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/staticfiles/'
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
 DEFAULT_FILE_STORAGE = "django_s3_storage.storage.S3Storage"
 
 # The AWS region to connect to.
