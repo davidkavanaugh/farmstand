@@ -13,7 +13,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -114,11 +114,10 @@ USE_TZ = True
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-STATIC_ROOT = 'staticfiles'
-STATIC_URL = '/staticfiles/'
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
+STATIC_URL = '/assets/'
+STATIC_ROOT = "assets"
+STATICFILES_DIRS = ( os.path.join('static'), )
+
 DEFAULT_FILE_STORAGE = "django_s3_storage.storage.S3Storage"
 
 # The AWS region to connect to.
